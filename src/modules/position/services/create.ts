@@ -81,44 +81,39 @@ export async function createPosition(
 ) {
   const positionsData = await fetchPositions();
 
-  if (Array.isArray(positionsData) && positionsData.length === 0) {
+  if (!positionsData.length) {
     throw new Error('No positions data retrieved from external API');
   }
-
-  const existing = await prisma.position.findMany({
-    select: { id: true },
-  });
-
-  const existingIds = new Set(existing.map((d) => d.id));
 
   let updated = 0;
   let created = 0;
 
-  await Promise.all(
-    positionsData.map(async (d) => {
-      const isNew = !existingIds.has(d.id);
-      if (isNew) {
-        created++;
-      } else {
-        updated++;
-      }
+  const existing = await prisma.position.findMany({
+    select: { id: true },
+  });
+  const existingIds = new Set(existing.map((e) => e.id));
 
-      return prisma.position.upsert({
-        where: { id: d.id },
-        update: {
-          pos_name: d.pos_name,
-          pos_status: d.pos_status,
-          poscodeId: d.poscodeId,
-        },
-        create: {
-          id: d.id,
-          pos_name: d.pos_name,
-          pos_status: d.pos_status,
-          poscodeId: d.poscodeId,
-        },
-      });
-    }),
-  );
+  const operations = positionsData.map((d) => {
+    if (existingIds.has(d.id)) updated++;
+    else created++;
+
+    return prisma.position.upsert({
+      where: { id: d.id },
+      update: {
+        pos_name: d.pos_name,
+        pos_status: d.pos_status,
+        poscodeId: d.poscodeId,
+      },
+      create: {
+        id: d.id,
+        pos_name: d.pos_name,
+        pos_status: d.pos_status,
+        poscodeId: d.poscodeId,
+      },
+    });
+  });
+
+  await prisma.$transaction(operations);
 
   return {
     success: true,

@@ -6,11 +6,14 @@ import {
   Put,
   Param,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { TurningService } from './turning.service';
 import { CreateTurningDto } from './dto/create-turning.dto';
 import { UpdateTurningDto } from './dto/update-turning.dto';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
+@UseGuards(JwtAuthGuard)
 @Controller('turnings')
 export class TurningController {
   constructor(private readonly turningService: TurningService) {}
