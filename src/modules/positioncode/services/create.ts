@@ -1,16 +1,5 @@
 import { PrismaService } from '../../../prisma/prisma.service';
-// import { CreateDepartmentDto } from '../dto/create-department.dto';
-import axios, { AxiosResponse } from 'axios';
-
-interface LoginResponse {
-  token: string;
-}
-
-interface LoginResult {
-  success: boolean;
-  token?: string;
-  message: string;
-}
+import { externalApi } from '../../../utils/external-api';
 
 interface Positioncode {
   id: number;
@@ -19,56 +8,13 @@ interface Positioncode {
   posgroupId: number;
 }
 
-// ฟังก์ชัน login API แยกออกมา
-async function loginToApi(): Promise<LoginResult> {
-  try {
-    const response: AxiosResponse<LoginResponse> = await axios.post(
-      `${process.env.URL_API}/login`,
-      {
-        username: process.env.USERNAME_API,
-        password: process.env.PASSWORD_API,
-      },
-    );
-
-    const token = response.data.token;
-    if (!token) {
-      return { success: false, message: 'Cannot get token' };
-    }
-
-    return { success: true, token, message: 'Login successful' };
-  } catch (err: unknown) {
-    let message = 'Login failed';
-    if (err instanceof Error) {
-      message = err.message;
-    }
-
-    console.error('Login API failed:', message);
-    return { success: false, message };
-  }
-}
-
 async function fetchPositionCodes(): Promise<Positioncode[]> {
-  // login ก่อน
-  const loginResult = await loginToApi();
-  if (!loginResult.success || !loginResult.token) {
-    throw new Error(`Login failed: ${loginResult.message}`);
-  }
-
-  const token = loginResult.token;
-
   try {
-    const response: AxiosResponse<Positioncode[]> = await axios.get(
-      `${process.env.URL_API}/positioncodes`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      },
-    );
+    const response = await externalApi.get<Positioncode[]>('/positioncodes');
 
     return response.data;
   } catch (err: unknown) {
-    let message = 'Failed to fetch units';
+    let message = 'Failed to fetch position codes';
     if (err instanceof Error) message = err.message;
     console.error(message);
     throw new Error(message);

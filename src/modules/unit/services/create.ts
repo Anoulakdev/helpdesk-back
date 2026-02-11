@@ -1,16 +1,5 @@
 import { PrismaService } from '../../../prisma/prisma.service';
-// import { CreateDepartmentDto } from '../dto/create-department.dto';
-import axios, { AxiosResponse } from 'axios';
-
-interface LoginResponse {
-  token: string;
-}
-
-interface LoginResult {
-  success: boolean;
-  token?: string;
-  message: string;
-}
+import { externalApi } from '../../../utils/external-api';
 
 interface Unit {
   id: number;
@@ -22,52 +11,9 @@ interface Unit {
   officeId: number;
 }
 
-// ฟังก์ชัน login API แยกออกมา
-async function loginToApi(): Promise<LoginResult> {
-  try {
-    const response: AxiosResponse<LoginResponse> = await axios.post(
-      `${process.env.URL_API}/login`,
-      {
-        username: process.env.USERNAME_API,
-        password: process.env.PASSWORD_API,
-      },
-    );
-
-    const token = response.data.token;
-    if (!token) {
-      return { success: false, message: 'Cannot get token' };
-    }
-
-    return { success: true, token, message: 'Login successful' };
-  } catch (err: unknown) {
-    let message = 'Login failed';
-    if (err instanceof Error) {
-      message = err.message;
-    }
-
-    console.error('Login API failed:', message);
-    return { success: false, message };
-  }
-}
-
 async function fetchUnits(): Promise<Unit[]> {
-  // login ก่อน
-  const loginResult = await loginToApi();
-  if (!loginResult.success || !loginResult.token) {
-    throw new Error(`Login failed: ${loginResult.message}`);
-  }
-
-  const token = loginResult.token;
-
   try {
-    const response: AxiosResponse<Unit[]> = await axios.get(
-      `${process.env.URL_API}/units`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      },
-    );
+    const response = await externalApi.get<Unit[]>('/units');
 
     return response.data;
   } catch (err: unknown) {

@@ -17,6 +17,8 @@ import { RoleModule } from './modules/role/role.module';
 import { BuildingModule } from './modules/building/building.module';
 import { FloorModule } from './modules/floor/floor.module';
 import { TurningModule } from './modules/turning/turning.module';
+import { HelpdeskstatusModule } from './modules/helpdeskstatus/helpdeskstatus.module';
+import { PriorityModule } from './modules/priority/priority.module';
 
 @Module({
   imports: [
@@ -35,6 +37,8 @@ import { TurningModule } from './modules/turning/turning.module';
     BuildingModule,
     FloorModule,
     TurningModule,
+    HelpdeskstatusModule,
+    PriorityModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService],

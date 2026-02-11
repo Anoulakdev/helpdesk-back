@@ -4,7 +4,7 @@ import { UpdateBuildingDto } from './dto/update-building.dto';
 import { PrismaService } from '../../prisma/prisma.service';
 import { selectBuilding } from './services/selectBuilding';
 import { createBuilding } from './services/create';
-import { findAllBuildings } from './services/findall';
+import { findAllBuilding } from './services/findall';
 import { findOneBuilding } from './services/findone';
 import { updateBuilding } from './services/update';
 import { removeBuilding } from './services/remove';
@@ -18,7 +18,7 @@ export class BuildingService {
   }
 
   findAll() {
-    return findAllBuildings(this.prisma);
+    return findAllBuilding(this.prisma);
   }
 
   selectBuilding() {

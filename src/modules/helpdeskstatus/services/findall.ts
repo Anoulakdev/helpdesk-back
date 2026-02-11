@@ -1,7 +1,7 @@
 import { PrismaService } from '../../../prisma/prisma.service';
 
-export async function findAllBuilding(prisma: PrismaService) {
-  return prisma.building.findMany({
+export async function findAllHelpdeskStatus(prisma: PrismaService) {
+  return prisma.helpdeskStatus.findMany({
     orderBy: {
       id: 'asc',
     },

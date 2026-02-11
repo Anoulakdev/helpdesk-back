@@ -1,53 +1,10 @@
 import { InternalServerErrorException } from '@nestjs/common';
 import { PrismaService } from '../../../prisma/prisma.service';
-import axios, { AxiosResponse } from 'axios';
+import { externalApi } from '../../../utils/external-api';
 import * as bcrypt from 'bcryptjs';
-
-/* =======================
-   Interfaces
-======================= */
-
-interface LoginResponse {
-  token: string;
-}
-
-interface LoginResult {
-  success: boolean;
-  token?: string;
-  message: string;
-}
 
 interface EmployeeFromApi {
   emp_code: string;
-}
-
-/* =======================
-   Login API
-======================= */
-
-async function loginToApi(): Promise<LoginResult> {
-  try {
-    const response: AxiosResponse<LoginResponse> = await axios.post(
-      `${process.env.URL_API}/login`,
-      {
-        username: process.env.USERNAME_API,
-        password: process.env.PASSWORD_API,
-      },
-    );
-
-    const token = response.data.token;
-    if (!token) {
-      return { success: false, message: 'Cannot get token' };
-    }
-
-    return { success: true, token, message: 'Login successful' };
-  } catch (err: unknown) {
-    let message = 'Login failed';
-    if (err instanceof Error) message = err.message;
-
-    console.error('Login API failed:', message);
-    return { success: false, message };
-  }
 }
 
 /* =======================
@@ -55,20 +12,8 @@ async function loginToApi(): Promise<LoginResult> {
 ======================= */
 
 async function fetchEmployees(): Promise<EmployeeFromApi[]> {
-  const loginResult = await loginToApi();
-  if (!loginResult.success || !loginResult.token) {
-    throw new Error(`Login failed: ${loginResult.message}`);
-  }
-
   try {
-    const response: AxiosResponse<EmployeeFromApi[]> = await axios.get(
-      `${process.env.URL_API}/employees`,
-      {
-        headers: {
-          Authorization: `Bearer ${loginResult.token}`,
-        },
-      },
-    );
+    const response = await externalApi.get<EmployeeFromApi[]>('/employees');
 
     return response.data;
   } catch (err: unknown) {
