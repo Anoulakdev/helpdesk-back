@@ -19,6 +19,7 @@ import { FloorModule } from './modules/floor/floor.module';
 import { TurningModule } from './modules/turning/turning.module';
 import { HelpdeskstatusModule } from './modules/helpdeskstatus/helpdeskstatus.module';
 import { PriorityModule } from './modules/priority/priority.module';
+import { HeadcategoryModule } from './modules/headcategory/headcategory.module';
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import { PriorityModule } from './modules/priority/priority.module';
     TurningModule,
     HelpdeskstatusModule,
     PriorityModule,
+    HeadcategoryModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService],

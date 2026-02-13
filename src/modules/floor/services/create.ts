@@ -6,6 +6,9 @@ export async function createFloor(
   createFloorDto: CreateFloorDto,
 ) {
   return prisma.floor.create({
-    data: createFloorDto,
+    data: {
+      ...createFloorDto,
+      buildingId: Number(createFloorDto.buildingId),
+    },
   });
 }

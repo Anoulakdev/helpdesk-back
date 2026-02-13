@@ -12,6 +12,9 @@ export async function updateFloor(
 
   return prisma.floor.update({
     where: { id },
-    data: updateFloorDto,
+    data: {
+      ...updateFloorDto,
+      buildingId: Number(updateFloorDto.buildingId),
+    },
   });
 }

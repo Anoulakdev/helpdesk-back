@@ -27,6 +27,8 @@ model User {
   helpdeskRequests HelpdeskRequest[]
   assignments      Assignment[]
   chats            Chat[]
+  categories       Category[]
+  tickets          Ticket[]
 }
 
 model Employee {
@@ -141,6 +143,8 @@ model HeadCategory {
   department   Department @relation(fields: [departmentId], references: [id])
   divisionId   Int
   division     Division   @relation(fields: [divisionId], references: [id])
+  createdAt    DateTime   @default(now()) @db.Timestamptz(0)
+  updatedAt    DateTime   @updatedAt @db.Timestamptz(0)
   categories   Category[]
 }
 
@@ -152,6 +156,10 @@ model Category {
   description    String?       @db.VarChar(255)
   catIconId      Int?
   catIcon        CategoryIcon? @relation(fields: [catIconId], references: [id])
+  createdAt      DateTime      @default(now()) @db.Timestamptz(0)
+  updatedAt      DateTime      @updatedAt @db.Timestamptz(0)
+  createdById    Int
+  createdBy      User          @relation(fields: [createdById], references: [id])
   tickets        Ticket[]
 }
 
@@ -163,6 +171,8 @@ model Ticket {
   description      String?           @db.VarChar(255)
   createdAt        DateTime          @default(now()) @db.Timestamptz(0)
   updatedAt        DateTime          @updatedAt @db.Timestamptz(0)
+  createdById      Int
+  createdBy        User              @relation(fields: [createdById], references: [id])
   helpdeskRequests HelpdeskRequest[]
 }
 
@@ -211,6 +221,7 @@ model HelpdeskRequest {
   floor            Floor          @relation(fields: [floorId], references: [id])
   turningId        Int
   turning          Turning        @relation(fields: [turningId], references: [id])
+  room             String?        @db.VarChar(255)
   numberSKT        String         @db.VarChar(255)
   telephone        Int
   details          String?        @db.Text
