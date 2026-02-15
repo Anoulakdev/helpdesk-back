@@ -1,8 +1,18 @@
-import { Controller, Get, Post, Body, Param, Query } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { DivisionService } from './division.service';
 // import { CreateDivisionDto } from './dto/create-division.dto';
 // import { UpdateDivisionDto } from './dto/update-division.dto';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
+@UseGuards(JwtAuthGuard)
 @Controller('divisions')
 export class DivisionController {
   constructor(private readonly divisionService: DivisionService) {}

@@ -7,6 +7,7 @@ import { findAllHeadCategory } from './services/findall';
 import { findOneHeadCategory } from './services/findone';
 import { updateHeadCategory } from './services/update';
 import { removeHeadCategory } from './services/remove';
+import { selectHeadcategory } from './services/selectHeadcategory';
 
 @Injectable()
 export class HeadcategoryService {
@@ -18,6 +19,10 @@ export class HeadcategoryService {
 
   findAll() {
     return findAllHeadCategory(this.prisma);
+  }
+
+  selectHeadcategory() {
+    return selectHeadcategory(this.prisma);
   }
 
   findOne(id: number) {

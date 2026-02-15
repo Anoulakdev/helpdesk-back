@@ -3,15 +3,21 @@ import { Request } from 'express';
 export interface UserRequest extends Request {
   user: {
     id: number;
-    email: string;
-    firstname: string;
-    lastname: string;
+    username: string;
+    status: string;
+    employeeId: number;
     roleId: number;
-    phone: string;
-    isActive: string;
-    isOnline: string;
-    userimg: string;
-    companyId: number;
-    powers: number[];
+    employee: {
+      id: number;
+      first_name: string;
+      last_name: string;
+      emp_code: string;
+      gender: string;
+      posId: number;
+      departmentId: number;
+      divisionId: number;
+      ofiiceId: number;
+      unitId: number;
+    };
   };
 }

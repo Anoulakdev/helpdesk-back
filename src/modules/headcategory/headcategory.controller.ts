@@ -6,11 +6,14 @@ import {
   Put,
   Param,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { HeadcategoryService } from './headcategory.service';
 import { CreateHeadcategoryDto } from './dto/create-headcategory.dto';
 import { UpdateHeadcategoryDto } from './dto/update-headcategory.dto';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
+@UseGuards(JwtAuthGuard)
 @Controller('headcategorys')
 export class HeadcategoryController {
   constructor(private readonly headcategoryService: HeadcategoryService) {}
@@ -23,6 +26,11 @@ export class HeadcategoryController {
   @Get()
   findAll() {
     return this.headcategoryService.findAll();
+  }
+
+  @Get('selectheadcategory')
+  selectHeadcategory() {
+    return this.headcategoryService.selectHeadcategory();
   }
 
   @Get(':id')

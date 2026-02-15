@@ -20,6 +20,9 @@ import { TurningModule } from './modules/turning/turning.module';
 import { HelpdeskstatusModule } from './modules/helpdeskstatus/helpdeskstatus.module';
 import { PriorityModule } from './modules/priority/priority.module';
 import { HeadcategoryModule } from './modules/headcategory/headcategory.module';
+import { CategoryModule } from './modules/category/category.module';
+import { CategoryiconModule } from './modules/categoryicon/categoryicon.module';
+import { TicketModule } from './modules/ticket/ticket.module';
 
 @Module({
   imports: [
@@ -41,6 +44,9 @@ import { HeadcategoryModule } from './modules/headcategory/headcategory.module';
     HelpdeskstatusModule,
     PriorityModule,
     HeadcategoryModule,
+    CategoryModule,
+    CategoryiconModule,
+    TicketModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService],
