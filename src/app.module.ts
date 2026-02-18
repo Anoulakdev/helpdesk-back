@@ -23,6 +23,7 @@ import { HeadcategoryModule } from './modules/headcategory/headcategory.module';
 import { CategoryModule } from './modules/category/category.module';
 import { CategoryiconModule } from './modules/categoryicon/categoryicon.module';
 import { TicketModule } from './modules/ticket/ticket.module';
+import { HelpdeskrequestModule } from './modules/helpdeskrequest/helpdeskrequest.module';
 
 @Module({
   imports: [
@@ -47,6 +48,7 @@ import { TicketModule } from './modules/ticket/ticket.module';
     CategoryModule,
     CategoryiconModule,
     TicketModule,
+    HelpdeskrequestModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService],

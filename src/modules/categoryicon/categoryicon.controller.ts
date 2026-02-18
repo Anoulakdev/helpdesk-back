@@ -24,7 +24,7 @@ export class CategoryiconController {
   constructor(private readonly categoryiconService: CategoryiconService) {}
 
   @Post()
-  uploadMaintenanceFile(
+  uploadCategoryicon(
     @UploadedFile() catIcon: Express.Multer.File,
     @Body() createCategoryiconDto: CreateCategoryiconDto,
   ) {
