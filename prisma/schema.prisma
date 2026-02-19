@@ -238,6 +238,7 @@ model HelpdeskRequest {
 
   @@index([numberSKT])
 }
+
 model HelpdeskImg {
   id                Int             @id @default(autoincrement())
   helpdeskRequestId Int
@@ -251,7 +252,6 @@ model Priority {
   helpdeskRequests HelpdeskRequest[]
 }
 
-
 model Assignment {
   id                Int             @id @default(autoincrement())
   helpdeskRequestId Int
@@ -259,6 +259,8 @@ model Assignment {
   assignedToId      Int
   assignedTo        User            @relation(fields: [assignedToId], references: [id])
   assignedAt        DateTime        @default(now()) @db.Timestamptz(0)
+
+  @@unique([helpdeskRequestId, assignedToId])
 }
 
 model Chat {

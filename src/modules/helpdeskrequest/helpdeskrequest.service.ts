@@ -9,6 +9,9 @@ import { userFindAll } from './services/userfindall';
 import { findOneHDRequest } from './services/findone';
 import { updateHDRequest } from './services/update';
 import { removeHDRequest } from './services/remove';
+import { updateHelpdeskStatus } from './services/updateHelpdeskStatus';
+import { updatePriority } from './services/updatePriority';
+import { sktHistory } from './services/history';
 
 @Injectable()
 export class HelpdeskrequestService {
@@ -37,12 +40,30 @@ export class HelpdeskrequestService {
     return userFindAll(this.prisma, user, helpdeskStatusId);
   }
 
+  sktHistory(numberSKT: string, createdAt: string) {
+    return sktHistory(this.prisma, numberSKT, createdAt);
+  }
+
   findOne(id: number) {
     return findOneHDRequest(this.prisma, id);
   }
 
   update(id: number, updateHelpdeskrequestDto: UpdateHelpdeskrequestDto) {
     return updateHDRequest(this.prisma, id, updateHelpdeskrequestDto);
+  }
+
+  updateHelpdeskStatus(
+    id: number,
+    updateHelpdeskrequestDto: UpdateHelpdeskrequestDto,
+  ) {
+    return updateHelpdeskStatus(this.prisma, id, updateHelpdeskrequestDto);
+  }
+
+  updatePriority(
+    id: number,
+    updateHelpdeskrequestDto: UpdateHelpdeskrequestDto,
+  ) {
+    return updatePriority(this.prisma, id, updateHelpdeskrequestDto);
   }
 
   remove(id: number) {

@@ -6,6 +6,7 @@ import {
   Put,
   Param,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 // import { CreateUserDto } from './dto/create-user.dto';
@@ -23,8 +24,8 @@ export class UserController {
   }
 
   @Get()
-  findAll() {
-    return this.userService.findAll();
+  findAll(@Query('divisionId') divisionId?: number) {
+    return this.userService.findAll(divisionId);
   }
 
   @Get(':id')

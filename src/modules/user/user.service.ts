@@ -15,8 +15,8 @@ export class UserService {
     return createUser(this.prisma);
   }
 
-  findAll() {
-    return findAllUser(this.prisma);
+  findAll(divisionId?: number) {
+    return findAllUser(this.prisma, divisionId);
   }
 
   findOne(id: number) {

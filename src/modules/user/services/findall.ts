@@ -1,7 +1,12 @@
 import { PrismaService } from '../../../prisma/prisma.service';
 
-export async function findAllUser(prisma: PrismaService) {
+export async function findAllUser(prisma: PrismaService, divisionId?: number) {
+  const where = divisionId
+    ? { employee: { divisionId: Number(divisionId) } }
+    : undefined;
+
   return prisma.user.findMany({
+    where: where,
     orderBy: {
       id: 'asc',
     },

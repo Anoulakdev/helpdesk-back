@@ -73,6 +73,14 @@ export class HelpdeskrequestController {
     return this.helpdeskrequestService.userFindAll(req.user, helpdeskStatusId);
   }
 
+  @Get('history')
+  sktHistory(
+    @Query('numberSKT') numberSKT: string,
+    @Query('createdAt') createdAt: string,
+  ) {
+    return this.helpdeskrequestService.sktHistory(numberSKT, createdAt);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.helpdeskrequestService.findOne(+id);
@@ -109,6 +117,28 @@ export class HelpdeskrequestController {
     }
 
     return this.helpdeskrequestService.update(+id, updateHelpdeskrequestDto);
+  }
+
+  @Put('updatehelpdeskstatus/:id')
+  updateHelpdeskStatus(
+    @Param('id') id: string,
+    @Body() updateHelpdeskrequestDto: UpdateHelpdeskrequestDto,
+  ) {
+    return this.helpdeskrequestService.updateHelpdeskStatus(
+      +id,
+      updateHelpdeskrequestDto,
+    );
+  }
+
+  @Put('updatepriority/:id')
+  updatePriority(
+    @Param('id') id: string,
+    @Body() updateHelpdeskrequestDto: UpdateHelpdeskrequestDto,
+  ) {
+    return this.helpdeskrequestService.updatePriority(
+      +id,
+      updateHelpdeskrequestDto,
+    );
   }
 
   @Delete(':id')
