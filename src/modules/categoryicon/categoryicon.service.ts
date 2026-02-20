@@ -7,6 +7,7 @@ import { findAllCategoryIcon } from './services/findall';
 import { findOneCategoryIcon } from './services/findone';
 import { updateCategoryIcon } from './services/update';
 import { removeCategoryIcon } from './services/remove';
+import { selectCategoryIcon } from './services/selectCategoryicon';
 
 @Injectable()
 export class CategoryiconService {
@@ -25,6 +26,10 @@ export class CategoryiconService {
 
   findAll() {
     return findAllCategoryIcon(this.prisma);
+  }
+
+  selectCategoryIcon() {
+    return selectCategoryIcon(this.prisma);
   }
 
   async findOne(id: number) {

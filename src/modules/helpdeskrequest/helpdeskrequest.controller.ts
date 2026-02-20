@@ -19,8 +19,10 @@ import { UserRequest } from '../../interfaces/user-request.interface';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { multerConfig } from '../../config/multer.config';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
+import { RolesGuard } from '../auth/guards/roles.guard';
 
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('helpdeskrequests')
 export class HelpdeskrequestController {
   constructor(
@@ -28,6 +30,7 @@ export class HelpdeskrequestController {
   ) {}
 
   @Post()
+  @Roles(4)
   @UseInterceptors(
     FileFieldsInterceptor(
       [
@@ -58,6 +61,7 @@ export class HelpdeskrequestController {
   }
 
   @Get('admin')
+  @Roles(2)
   adminFindAll(
     @Req() req: UserRequest,
     @Query('helpdeskStatusId') helpdeskStatusId?: number,
@@ -66,6 +70,7 @@ export class HelpdeskrequestController {
   }
 
   @Get('user')
+  @Roles(4)
   userFindAll(
     @Req() req: UserRequest,
     @Query('helpdeskStatusId') helpdeskStatusId?: number,
@@ -74,6 +79,7 @@ export class HelpdeskrequestController {
   }
 
   @Get('history')
+  @Roles(2, 3, 4)
   sktHistory(
     @Query('numberSKT') numberSKT: string,
     @Query('createdAt') createdAt: string,
@@ -82,11 +88,13 @@ export class HelpdeskrequestController {
   }
 
   @Get(':id')
+  @Roles(2, 3, 4)
   findOne(@Param('id') id: string) {
     return this.helpdeskrequestService.findOne(+id);
   }
 
   @Put(':id')
+  @Roles(4)
   @UseInterceptors(
     FileFieldsInterceptor(
       [
@@ -120,6 +128,7 @@ export class HelpdeskrequestController {
   }
 
   @Put('updatehelpdeskstatus/:id')
+  @Roles(2, 3)
   updateHelpdeskStatus(
     @Param('id') id: string,
     @Body() updateHelpdeskrequestDto: UpdateHelpdeskrequestDto,
@@ -131,6 +140,7 @@ export class HelpdeskrequestController {
   }
 
   @Put('updatepriority/:id')
+  @Roles(2)
   updatePriority(
     @Param('id') id: string,
     @Body() updateHelpdeskrequestDto: UpdateHelpdeskrequestDto,
@@ -142,6 +152,7 @@ export class HelpdeskrequestController {
   }
 
   @Delete(':id')
+  @Roles(4)
   remove(@Param('id') id: string) {
     return this.helpdeskrequestService.remove(+id);
   }

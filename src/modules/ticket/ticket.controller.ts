@@ -15,18 +15,22 @@ import { CreateTicketDto } from './dto/create-ticket.dto';
 import { UpdateTicketDto } from './dto/update-ticket.dto';
 import { UserRequest } from '../../interfaces/user-request.interface';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
+import { RolesGuard } from '../auth/guards/roles.guard';
 
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('tickets')
 export class TicketController {
   constructor(private readonly ticketService: TicketService) {}
 
   @Post()
+  @Roles(2)
   create(@Req() req: UserRequest, @Body() createTicketDto: CreateTicketDto) {
     return this.ticketService.create(req.user, createTicketDto);
   }
 
   @Get()
+  @Roles(2)
   findAll(@Req() req: UserRequest) {
     return this.ticketService.findAll(req.user);
   }
@@ -37,11 +41,13 @@ export class TicketController {
   }
 
   @Get(':id')
+  @Roles(2)
   findOne(@Param('id') id: string) {
     return this.ticketService.findOne(+id);
   }
 
   @Put(':id')
+  @Roles(2)
   update(
     @Param('id') id: string,
     @Req() req: UserRequest,
@@ -51,6 +57,7 @@ export class TicketController {
   }
 
   @Delete(':id')
+  @Roles(2)
   remove(@Param('id') id: string) {
     return this.ticketService.remove(+id);
   }

@@ -25,6 +25,7 @@ import { CategoryiconModule } from './modules/categoryicon/categoryicon.module';
 import { TicketModule } from './modules/ticket/ticket.module';
 import { HelpdeskrequestModule } from './modules/helpdeskrequest/helpdeskrequest.module';
 import { AssignmentModule } from './modules/assignment/assignment.module';
+import { ChatModule } from './modules/chat/chat.module';
 
 @Module({
   imports: [
@@ -51,6 +52,7 @@ import { AssignmentModule } from './modules/assignment/assignment.module';
     TicketModule,
     HelpdeskrequestModule,
     AssignmentModule,
+    ChatModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService],

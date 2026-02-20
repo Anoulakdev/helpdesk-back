@@ -1,12 +1,13 @@
 import { BadRequestException } from '@nestjs/common';
 import { PrismaService } from '../../../prisma/prisma.service';
 import { AuthUser } from '../../../interfaces/auth-user.interface';
+import * as moment from 'moment-timezone';
 
 export async function findAllTicket(prisma: PrismaService, user: AuthUser) {
   if (!user.employee?.divisionId) {
     throw new BadRequestException('User division not found');
   }
-  return prisma.ticket.findMany({
+  const tickets = await prisma.ticket.findMany({
     orderBy: {
       id: 'asc',
     },
@@ -18,7 +19,13 @@ export async function findAllTicket(prisma: PrismaService, user: AuthUser) {
       },
     },
     include: {
-      category: true,
+      category: {
+        select: {
+          id: true,
+          title: true,
+          description: true,
+        },
+      },
       createdBy: {
         select: {
           id: true,
@@ -34,4 +41,10 @@ export async function findAllTicket(prisma: PrismaService, user: AuthUser) {
       },
     },
   });
+
+  return tickets.map((ticket) => ({
+    ...ticket,
+    createdAt: moment(ticket.createdAt).tz('Asia/Vientiane').format(),
+    updatedAt: moment(ticket.updatedAt).tz('Asia/Vientiane').format(),
+  }));
 }

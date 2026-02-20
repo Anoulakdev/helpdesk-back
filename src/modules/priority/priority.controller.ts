@@ -12,18 +12,22 @@ import { PriorityService } from './priority.service';
 import { CreatePriorityDto } from './dto/create-priority.dto';
 import { UpdatePriorityDto } from './dto/update-priority.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
+import { RolesGuard } from '../auth/guards/roles.guard';
 
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('prioritys')
 export class PriorityController {
   constructor(private readonly priorityService: PriorityService) {}
 
   @Post()
+  @Roles(1)
   create(@Body() createPriorityDto: CreatePriorityDto) {
     return this.priorityService.create(createPriorityDto);
   }
 
   @Get()
+  @Roles(1)
   findAll() {
     return this.priorityService.findAll();
   }
@@ -34,11 +38,13 @@ export class PriorityController {
   }
 
   @Get(':id')
+  @Roles(1)
   findOne(@Param('id') id: string) {
     return this.priorityService.findOne(+id);
   }
 
   @Put(':id')
+  @Roles(1)
   update(
     @Param('id') id: string,
     @Body() updatePriorityDto: UpdatePriorityDto,
@@ -47,6 +53,7 @@ export class PriorityController {
   }
 
   @Delete(':id')
+  @Roles(1)
   remove(@Param('id') id: string) {
     return this.priorityService.remove(+id);
   }

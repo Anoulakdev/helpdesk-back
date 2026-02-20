@@ -15,13 +15,16 @@ import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { UserRequest } from '../../interfaces/user-request.interface';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
+import { RolesGuard } from '../auth/guards/roles.guard';
 
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('categorys')
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
   @Post()
+  @Roles(2)
   create(
     @Req() req: UserRequest,
     @Body() createCategoryDto: CreateCategoryDto,
@@ -30,6 +33,7 @@ export class CategoryController {
   }
 
   @Get()
+  @Roles(2)
   findAll(@Req() req: UserRequest) {
     return this.categoryService.findAll(req.user);
   }
@@ -40,11 +44,13 @@ export class CategoryController {
   }
 
   @Get(':id')
+  @Roles(2)
   findOne(@Param('id') id: string) {
     return this.categoryService.findOne(+id);
   }
 
   @Put(':id')
+  @Roles(2)
   update(
     @Param('id') id: string,
     @Req() req: UserRequest,
@@ -54,6 +60,7 @@ export class CategoryController {
   }
 
   @Delete(':id')
+  @Roles(2)
   remove(@Param('id') id: string) {
     return this.categoryService.remove(+id);
   }

@@ -6,7 +6,13 @@ export async function findOneHDRequest(prisma: PrismaService, id: number) {
   const hdrequest = await prisma.helpdeskRequest.findUnique({
     where: { id },
     include: {
-      ticket: true,
+      ticket: {
+        select: {
+          id: true,
+          title: true,
+          description: true,
+        },
+      },
       helpdeskStatus: true,
       building: true,
       floor: true,
@@ -63,7 +69,27 @@ export async function findOneHDRequest(prisma: PrismaService, id: number) {
           },
         },
       },
-      chats: true,
+      chats: {
+        orderBy: {
+          id: 'desc',
+        },
+        include: {
+          sender: {
+            select: {
+              id: true,
+              employee: {
+                select: {
+                  id: true,
+                  first_name: true,
+                  last_name: true,
+                  gender: true,
+                  emp_code: true,
+                },
+              },
+            },
+          },
+        },
+      },
       hdImgs: true,
     },
   });
@@ -72,5 +98,9 @@ export async function findOneHDRequest(prisma: PrismaService, id: number) {
     ...hdrequest,
     createdAt: moment(hdrequest.createdAt).tz('Asia/Vientiane').format(),
     updatedAt: moment(hdrequest.updatedAt).tz('Asia/Vientiane').format(),
+    chats: hdrequest.chats.map((chat) => ({
+      ...chat,
+      createdAt: moment(chat.createdAt).tz('Asia/Vientiane').format(),
+    })),
   };
 }
