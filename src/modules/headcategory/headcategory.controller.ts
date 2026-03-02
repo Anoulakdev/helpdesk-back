@@ -7,10 +7,12 @@ import {
   Param,
   Delete,
   UseGuards,
+  Req,
 } from '@nestjs/common';
 import { HeadcategoryService } from './headcategory.service';
 import { CreateHeadcategoryDto } from './dto/create-headcategory.dto';
 import { UpdateHeadcategoryDto } from './dto/update-headcategory.dto';
+import { UserRequest } from '../../interfaces/user-request.interface';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { RolesGuard } from '../auth/guards/roles.guard';
@@ -33,8 +35,8 @@ export class HeadcategoryController {
   }
 
   @Get('selectheadcategory')
-  selectHeadcategory() {
-    return this.headcategoryService.selectHeadcategory();
+  selectHeadcategory(@Req() req: UserRequest) {
+    return this.headcategoryService.selectHeadcategory(req.user);
   }
 
   @Get(':id')

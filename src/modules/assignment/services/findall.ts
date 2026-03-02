@@ -53,6 +53,7 @@ export async function findAllAssignment(
   return assigns.map((assign) => {
     return {
       ...assign,
+      assignedAt: moment(assign.assignedAt).tz('Asia/Vientiane').format(),
       helpdeskRequest: {
         ...assign.helpdeskRequest,
         createdAt: moment(assign.helpdeskRequest.createdAt)

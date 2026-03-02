@@ -70,7 +70,7 @@ export class HelpdeskrequestController {
   }
 
   @Get('user')
-  @Roles(4)
+  @Roles(2, 3, 4)
   userFindAll(
     @Req() req: UserRequest,
     @Query('helpdeskStatusId') helpdeskStatusId?: number,
