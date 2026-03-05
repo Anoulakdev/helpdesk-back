@@ -58,6 +58,12 @@ export class UserController {
     return this.userService.update(+id, updateUserDto);
   }
 
+  @Put('updatestatus/:id')
+  @Roles(1)
+  updateStatus(@Param('id') id: string, @Query('actived') actived: string) {
+    return this.userService.updateStatus(+id, actived);
+  }
+
   @Put('changepassword/:id')
   changePassword(@Param('id') id: string, @Body() dto: ChangePasswordDto) {
     return this.userService.changePassword(+id, dto);

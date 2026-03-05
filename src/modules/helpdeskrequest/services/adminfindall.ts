@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { PrismaService } from '../../../prisma/prisma.service';
 import { AuthUser } from '../../../interfaces/auth-user.interface';
 import * as moment from 'moment-timezone';
@@ -8,7 +7,7 @@ export async function adminFindAll(
   user: AuthUser,
   helpdeskStatusId?: number,
 ) {
-  const where: any = {
+  const where = {
     ticket: {
       category: {
         headCategory: {

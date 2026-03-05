@@ -12,6 +12,7 @@ import { adminFindAll } from './services/adminfindall';
 import { adminAssign } from './services/adminassign';
 import { changePassword } from './services/changePassword';
 import { resetPassword } from './services/resetPassword';
+import { updateStatus } from './services/updateStatus';
 
 @Injectable()
 export class UserService {
@@ -39,6 +40,10 @@ export class UserService {
 
   update(id: number, updateUserDto: UpdateUserDto) {
     return updateUser(this.prisma, id, updateUserDto);
+  }
+
+  updateStatus(id: number, actived: string) {
+    return updateStatus(this.prisma, id, actived);
   }
 
   changePassword(id: number, dto: ChangePasswordDto) {

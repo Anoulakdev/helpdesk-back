@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { PrismaService } from '../../../prisma/prisma.service';
 import * as moment from 'moment-timezone';
 
@@ -7,7 +6,7 @@ export async function sktHistory(
   numberSKT: string,
   createdAt: string,
 ) {
-  const where: any = {
+  const where = {
     numberSKT,
     createdAt: {
       lt: moment(createdAt).tz('Asia/Vientiane').startOf('day').toDate(),

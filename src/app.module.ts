@@ -26,6 +26,7 @@ import { TicketModule } from './modules/ticket/ticket.module';
 import { HelpdeskrequestModule } from './modules/helpdeskrequest/helpdeskrequest.module';
 import { AssignmentModule } from './modules/assignment/assignment.module';
 import { ChatModule } from './modules/chat/chat.module';
+import { ReportModule } from './modules/report/report.module';
 
 @Module({
   imports: [
@@ -53,6 +54,7 @@ import { ChatModule } from './modules/chat/chat.module';
     HelpdeskrequestModule,
     AssignmentModule,
     ChatModule,
+    ReportModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService],
