@@ -42,6 +42,12 @@ export class AssignmentController {
     return this.assignmentService.findAll(req.user, helpdeskStatusId);
   }
 
+  @Put('accept')
+  @Roles(2, 3)
+  acceptAssignment(@Body() updateAssignmentDto: UpdateAssignmentDto) {
+    return this.assignmentService.acceptAssignment(updateAssignmentDto);
+  }
+
   @Put(':id')
   @Roles(2, 3)
   update(
@@ -53,11 +59,5 @@ export class AssignmentController {
       updateAssignmentDto.commentImg = commentImg.filename;
     }
     return this.assignmentService.update(+id, updateAssignmentDto);
-  }
-
-  @Put('accept')
-  @Roles(2, 3)
-  acceptAssignment(@Body() updateAssignmentDto: UpdateAssignmentDto) {
-    return this.assignmentService.acceptAssignment(updateAssignmentDto);
   }
 }

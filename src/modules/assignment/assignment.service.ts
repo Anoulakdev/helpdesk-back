@@ -20,11 +20,11 @@ export class AssignmentService {
     return findAllAssignment(this.prisma, user, helpdeskStatusId);
   }
 
-  update(id: number, updateAssignmentDto: UpdateAssignmentDto) {
-    return updateAssignment(this.prisma, id, updateAssignmentDto);
-  }
-
   acceptAssignment(updateAssignmentDto: UpdateAssignmentDto) {
     return acceptAssignment(this.prisma, updateAssignmentDto);
+  }
+
+  update(id: number, updateAssignmentDto: UpdateAssignmentDto) {
+    return updateAssignment(this.prisma, id, updateAssignmentDto);
   }
 }

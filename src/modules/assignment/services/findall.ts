@@ -20,6 +20,7 @@ export async function findAllAssignment(
       id: 'desc',
     },
     include: {
+      helpdeskStatus: true,
       helpdeskRequest: {
         include: {
           ticket: {
