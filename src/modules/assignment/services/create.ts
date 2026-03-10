@@ -16,6 +16,7 @@ export async function createAssignment(
     assignedToId.map((userId) => ({
       helpdeskRequestId: requestId,
       assignedToId: userId,
+      helpdeskStatusId: 2,
     })),
   );
 

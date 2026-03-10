@@ -207,6 +207,7 @@ model HelpdeskStatus {
   id               Int               @id @default(autoincrement())
   name             String            @db.VarChar(255)
   helpdeskRequests HelpdeskRequest[]
+  assignments      Assignment[]
 }
 
 model HelpdeskRequest {
@@ -222,7 +223,7 @@ model HelpdeskRequest {
   turningId        Int
   turning          Turning        @relation(fields: [turningId], references: [id])
   room             String?        @db.VarChar(255)
-  numberSKT        String         @db.VarChar(255)
+  numberSKT        String?        @db.VarChar(255)
   telephone        Int
   details          String?        @db.Text
   hdImgs           HelpdeskImg[]
@@ -258,7 +259,14 @@ model Assignment {
   helpdeskRequest   HelpdeskRequest @relation(fields: [helpdeskRequestId], references: [id])
   assignedToId      Int
   assignedTo        User            @relation(fields: [assignedToId], references: [id])
+  helpdeskStatusId  Int?
+  helpdeskStatus    HelpdeskStatus? @relation(fields: [helpdeskStatusId], references: [id])
+  comment           String?         @db.Text
+  commentImg        String?         @db.VarChar(255)
+  lat               Float?          @db.DoublePrecision
+  lng               Float?          @db.DoublePrecision
   assignedAt        DateTime        @default(now()) @db.Timestamptz(0)
+  updatedAt         DateTime?       @updatedAt @db.Timestamptz(0)
 
   @@unique([helpdeskRequestId, assignedToId])
 }
@@ -271,4 +279,5 @@ model Chat {
   sender            User            @relation(fields: [senderId], references: [id])
   message           String          @db.Text
   createdAt         DateTime        @default(now()) @db.Timestamptz(0)
+  updatedAt         DateTime?       @updatedAt @db.Timestamptz(0)
 }

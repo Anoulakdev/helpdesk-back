@@ -37,6 +37,18 @@ export class HelpdeskstatusController {
     return this.helpdeskstatusService.selectHelpdeskStatus();
   }
 
+  @Get('admin')
+  @Roles(2)
+  adminHelpdeskStatus() {
+    return this.helpdeskstatusService.adminHelpdeskStatus();
+  }
+
+  @Get('staff')
+  @Roles(3)
+  staffHelpdeskStatus() {
+    return this.helpdeskstatusService.staffHelpdeskStatus();
+  }
+
   @Get(':id')
   @Roles(1)
   findOne(@Param('id') id: string) {

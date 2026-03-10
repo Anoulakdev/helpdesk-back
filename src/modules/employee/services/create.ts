@@ -31,13 +31,23 @@ async function fetchEmployees(): Promise<Employee[]> {
   }
 }
 
+function chunkArray<T>(array: T[], size: number): T[][] {
+  const result: T[][] = [];
+
+  for (let i = 0; i < array.length; i += size) {
+    result.push(array.slice(i, i + size));
+  }
+
+  return result;
+}
+
 export async function createEmployee(
   prisma: PrismaService,
   // createUnitDto: CreateUnitDto,
 ) {
   const employeesData = await fetchEmployees();
 
-  if (Array.isArray(employeesData) && employeesData.length === 0) {
+  if (!employeesData?.length) {
     throw new Error('No employees data retrieved from external API');
   }
 
@@ -50,51 +60,57 @@ export async function createEmployee(
   let updated = 0;
   let created = 0;
 
-  await Promise.all(
-    employeesData.map(async (d) => {
-      const isNew = !existingIds.has(d.id);
-      if (isNew) {
-        created++;
-      } else {
-        updated++;
-      }
+  // แบ่งเป็น batch ละ 50
+  const batches = chunkArray(employeesData, 50);
 
-      return prisma.employee.upsert({
-        where: { id: d.id },
-        update: {
-          first_name: d.first_name,
-          last_name: d.last_name,
-          emp_code: d.emp_code,
-          status: d.status,
-          gender: d.gender,
-          tel: d.tel,
-          email: d.email,
-          empimg: d.empimg,
-          posId: d.posId,
-          departmentId: d.departmentId,
-          divisionId: d.divisionId,
-          officeId: d.officeId,
-          unitId: d.unitId,
-        },
-        create: {
-          id: d.id,
-          first_name: d.first_name,
-          last_name: d.last_name,
-          emp_code: d.emp_code,
-          status: d.status,
-          gender: d.gender,
-          tel: d.tel,
-          email: d.email,
-          empimg: d.empimg,
-          posId: d.posId,
-          departmentId: d.departmentId,
-          divisionId: d.divisionId,
-          officeId: d.officeId,
-          unitId: d.unitId,
-        },
-      });
-    }),
-  );
+  for (const batch of batches) {
+    await Promise.all(
+      batch.map(async (d) => {
+        const isNew = !existingIds.has(d.id);
+
+        if (isNew) {
+          created++;
+        } else {
+          updated++;
+        }
+
+        return prisma.employee.upsert({
+          where: { id: d.id },
+          update: {
+            first_name: d.first_name,
+            last_name: d.last_name,
+            emp_code: d.emp_code,
+            status: d.status,
+            gender: d.gender,
+            tel: d.tel,
+            email: d.email,
+            empimg: d.empimg,
+            posId: d.posId,
+            departmentId: d.departmentId,
+            divisionId: d.divisionId,
+            officeId: d.officeId,
+            unitId: d.unitId,
+          },
+          create: {
+            id: d.id,
+            first_name: d.first_name,
+            last_name: d.last_name,
+            emp_code: d.emp_code,
+            status: d.status,
+            gender: d.gender,
+            tel: d.tel,
+            email: d.email,
+            empimg: d.empimg,
+            posId: d.posId,
+            departmentId: d.departmentId,
+            divisionId: d.divisionId,
+            officeId: d.officeId,
+            unitId: d.unitId,
+          },
+        });
+      }),
+    );
+  }
 
   return {
     success: true,

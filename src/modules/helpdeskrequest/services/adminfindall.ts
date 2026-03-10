@@ -50,6 +50,7 @@ export async function adminFindAll(
       },
       assignments: {
         select: {
+          helpdeskStatus: true,
           assignedTo: {
             select: {
               id: true,

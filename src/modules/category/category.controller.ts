@@ -39,8 +39,11 @@ export class CategoryController {
   }
 
   @Get('selectcategory')
-  selectCategory(@Query('headCategoryId') headCategoryId?: number) {
-    return this.categoryService.selectCategory(headCategoryId);
+  selectCategory(
+    @Req() req: UserRequest,
+    @Query('headCategoryId') headCategoryId?: number,
+  ) {
+    return this.categoryService.selectCategory(req.user, headCategoryId);
   }
 
   @Get(':id')

@@ -22,8 +22,8 @@ export class CategoryService {
     return findAllCategory(this.prisma, user);
   }
 
-  selectCategory(headCategoryId?: number) {
-    return selectCategory(this.prisma, headCategoryId);
+  selectCategory(user: AuthUser, headCategoryId?: number) {
+    return selectCategory(this.prisma, user, headCategoryId);
   }
 
   findOne(id: number) {

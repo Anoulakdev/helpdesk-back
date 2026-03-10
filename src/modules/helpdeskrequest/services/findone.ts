@@ -52,7 +52,8 @@ export async function findOneHDRequest(prisma: PrismaService, id: number) {
         },
       },
       assignments: {
-        select: {
+        include: {
+          helpdeskStatus: true,
           assignedTo: {
             select: {
               id: true,
@@ -101,6 +102,7 @@ export async function findOneHDRequest(prisma: PrismaService, id: number) {
     chats: hdrequest.chats.map((chat) => ({
       ...chat,
       createdAt: moment(chat.createdAt).tz('Asia/Vientiane').format(),
+      updatedAt: moment(chat.updatedAt).tz('Asia/Vientiane').format(),
     })),
   };
 }

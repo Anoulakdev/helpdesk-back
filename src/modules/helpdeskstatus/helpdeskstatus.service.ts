@@ -8,6 +8,8 @@ import { findOneHelpdeskStatus } from './services/findone';
 import { updateHelpdeskStatus } from './services/update';
 import { removeHelpdeskStatus } from './services/remove';
 import { selectHelpdeskStatus } from './services/selectHelpdeskStatus';
+import { adminHelpdeskStatus } from './services/admin';
+import { staffHelpdeskStatus } from './services/staff';
 
 @Injectable()
 export class HelpdeskstatusService {
@@ -23,6 +25,14 @@ export class HelpdeskstatusService {
 
   selectHelpdeskStatus() {
     return selectHelpdeskStatus(this.prisma);
+  }
+
+  adminHelpdeskStatus() {
+    return adminHelpdeskStatus(this.prisma);
+  }
+
+  staffHelpdeskStatus() {
+    return staffHelpdeskStatus(this.prisma);
   }
 
   findOne(id: number) {
