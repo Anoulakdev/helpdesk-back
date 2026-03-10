@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/prefer-promise-reject-errors */
 import axios, {
   AxiosInstance,
@@ -28,7 +27,7 @@ let refreshSubscribers: ((token: string) => void)[] = [];
 
 export const externalApi: AxiosInstance = axios.create({
   baseURL: process.env.URL_API,
-  timeout: 5000,
+  timeout: 30000,
   headers: {
     'Content-Type': 'application/json',
   },
