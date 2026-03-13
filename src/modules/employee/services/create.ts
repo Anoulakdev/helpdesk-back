@@ -60,56 +60,52 @@ export async function createEmployee(
   let updated = 0;
   let created = 0;
 
-  // แบ่งเป็น batch ละ 50
-  const batches = chunkArray(employeesData, 50);
+  const batchSize = 50;
+  const batches = chunkArray(employeesData, batchSize);
 
   for (const batch of batches) {
-    await Promise.all(
-      batch.map(async (d) => {
-        const isNew = !existingIds.has(d.id);
+    // 🔹 รัน sequential แทน Promise.all
+    for (const d of batch) {
+      const isNew = !existingIds.has(d.id);
 
-        if (isNew) {
-          created++;
-        } else {
-          updated++;
-        }
+      if (isNew) created++;
+      else updated++;
 
-        return prisma.employee.upsert({
-          where: { id: d.id },
-          update: {
-            first_name: d.first_name,
-            last_name: d.last_name,
-            emp_code: d.emp_code,
-            status: d.status,
-            gender: d.gender,
-            tel: d.tel,
-            email: d.email,
-            empimg: d.empimg,
-            posId: d.posId,
-            departmentId: d.departmentId,
-            divisionId: d.divisionId,
-            officeId: d.officeId,
-            unitId: d.unitId,
-          },
-          create: {
-            id: d.id,
-            first_name: d.first_name,
-            last_name: d.last_name,
-            emp_code: d.emp_code,
-            status: d.status,
-            gender: d.gender,
-            tel: d.tel,
-            email: d.email,
-            empimg: d.empimg,
-            posId: d.posId,
-            departmentId: d.departmentId,
-            divisionId: d.divisionId,
-            officeId: d.officeId,
-            unitId: d.unitId,
-          },
-        });
-      }),
-    );
+      await prisma.employee.upsert({
+        where: { id: d.id },
+        update: {
+          first_name: d.first_name,
+          last_name: d.last_name,
+          emp_code: d.emp_code,
+          status: d.status,
+          gender: d.gender,
+          tel: d.tel,
+          email: d.email,
+          empimg: d.empimg,
+          posId: d.posId,
+          departmentId: d.departmentId,
+          divisionId: d.divisionId,
+          officeId: d.officeId,
+          unitId: d.unitId,
+        },
+        create: {
+          id: d.id,
+          first_name: d.first_name,
+          last_name: d.last_name,
+          emp_code: d.emp_code,
+          status: d.status,
+          gender: d.gender,
+          tel: d.tel,
+          email: d.email,
+          empimg: d.empimg,
+          posId: d.posId,
+          departmentId: d.departmentId,
+          divisionId: d.divisionId,
+          officeId: d.officeId,
+          unitId: d.unitId,
+        },
+      });
+    }
   }
 
   return {

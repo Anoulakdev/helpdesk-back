@@ -34,21 +34,27 @@ export async function createPositionGroup(prisma: PrismaService) {
   });
   const existingIds = new Set(existing.map((e) => e.id));
 
-  const operations = positionGroupsData.map((d) => {
-    if (existingIds.has(d.id)) updated++;
-    else created++;
+  const batchSize = 50;
 
-    return prisma.positionGroup.upsert({
-      where: { id: d.id },
-      update: { pos_group_name: d.pos_group_name },
-      create: {
-        id: d.id,
-        pos_group_name: d.pos_group_name,
-      },
-    });
-  });
+  for (let i = 0; i < positionGroupsData.length; i += batchSize) {
+    const batch = positionGroupsData.slice(i, i + batchSize);
 
-  await prisma.$transaction(operations);
+    for (const d of batch) {
+      const isNew = !existingIds.has(d.id);
+
+      if (isNew) created++;
+      else updated++;
+
+      await prisma.positionGroup.upsert({
+        where: { id: d.id },
+        update: { pos_group_name: d.pos_group_name },
+        create: {
+          id: d.id,
+          pos_group_name: d.pos_group_name,
+        },
+      });
+    }
+  }
 
   return {
     success: true,

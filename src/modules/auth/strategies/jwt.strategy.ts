@@ -31,7 +31,16 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         employeeId: true,
         roleId: true,
         status: true,
-        employee: true,
+        employee: {
+          include: {
+            division: {
+              select: {
+                id: true,
+                branch_id: true,
+              },
+            },
+          },
+        },
       },
     });
 

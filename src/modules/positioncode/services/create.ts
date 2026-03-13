@@ -39,27 +39,33 @@ export async function createPositionCode(
   });
   const existingIds = new Set(existing.map((e) => e.id));
 
-  const operations = positionCodesData.map((d) => {
-    if (existingIds.has(d.id)) updated++;
-    else created++;
+  const batchSize = 50;
 
-    return prisma.positionCode.upsert({
-      where: { id: d.id },
-      update: {
-        pos_code_name: d.pos_code_name,
-        pos_code_status: d.pos_code_status,
-        posgroupId: d.posgroupId,
-      },
-      create: {
-        id: d.id,
-        pos_code_name: d.pos_code_name,
-        pos_code_status: d.pos_code_status,
-        posgroupId: d.posgroupId,
-      },
-    });
-  });
+  for (let i = 0; i < positionCodesData.length; i += batchSize) {
+    const batch = positionCodesData.slice(i, i + batchSize);
 
-  await prisma.$transaction(operations);
+    for (const d of batch) {
+      const isNew = !existingIds.has(d.id);
+
+      if (isNew) created++;
+      else updated++;
+
+      await prisma.positionCode.upsert({
+        where: { id: d.id },
+        update: {
+          pos_code_name: d.pos_code_name,
+          pos_code_status: d.pos_code_status,
+          posgroupId: d.posgroupId,
+        },
+        create: {
+          id: d.id,
+          pos_code_name: d.pos_code_name,
+          pos_code_status: d.pos_code_status,
+          posgroupId: d.posgroupId,
+        },
+      });
+    }
+  }
 
   return {
     success: true,

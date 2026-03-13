@@ -64,40 +64,39 @@ export async function createUser(prisma: PrismaService) {
   let created = 0;
   let skipped = 0;
 
-  const operations: any[] = [];
+  // 🔹 batch size
+  const batchSize = 50;
+  for (let i = 0; i < employeesFromApi.length; i += batchSize) {
+    const batch = employeesFromApi.slice(i, i + batchSize);
 
-  for (const emp of employeesFromApi) {
-    const employeeId = employeeMap.get(emp.emp_code);
+    // sequential loop ภายใน batch
+    for (const emp of batch) {
+      const employeeId = employeeMap.get(emp.emp_code);
 
-    // ❌ ไม่มี employee ใน DB
-    if (!employeeId) {
-      console.warn(`Skip: employee not found for emp_code = ${emp.emp_code}`);
-      skipped++;
-      continue;
-    }
+      // ❌ ไม่มี employee ใน DB
+      if (!employeeId) {
+        console.warn(`Skip: employee not found for emp_code = ${emp.emp_code}`);
+        skipped++;
+        continue;
+      }
 
-    // ❌ user มีแล้ว
-    if (existingUsernames.has(emp.emp_code)) {
-      skipped++;
-      continue;
-    }
+      // ❌ user มีแล้ว
+      if (existingUsernames.has(emp.emp_code)) {
+        skipped++;
+        continue;
+      }
 
-    created++;
-
-    operations.push(
-      prisma.user.create({
+      await prisma.user.create({
         data: {
-          username: emp.emp_code, // ✅ username = emp_code
+          username: emp.emp_code,
           password: hashedPassword,
-          employeeId: employeeId, // ✅ FK จาก employee table
+          employeeId: employeeId,
           roleId: 4, // default role
         },
-      }),
-    );
-  }
+      });
 
-  if (operations.length > 0) {
-    await prisma.$transaction(operations);
+      created++;
+    }
   }
 
   return {

@@ -8,21 +8,34 @@ export async function selectCategory(
 ) {
   const where = {
     ...(headCategoryId && { headCategoryId: Number(headCategoryId) }),
-
-    headCategory: {
-      divisionId: {
-        not: user.employee.divisionId,
-      },
-    },
+    headCategory:
+      user.employee.division?.branch_id === 1
+        ? {
+            divisionId: {
+              not: user.employee.divisionId,
+            },
+            division: {
+              branch_id: {
+                not: 2,
+              },
+            },
+          }
+        : { divisionId: user.employee.divisionId },
   };
 
   return prisma.category.findMany({
-    orderBy: {
-      id: 'asc',
-    },
     where,
+    orderBy: {
+      headCategory: {
+        id: 'asc',
+      },
+    },
     include: {
-      headCategory: true,
+      headCategory: {
+        include: {
+          division: true,
+        },
+      },
       catIcon: true,
     },
   });

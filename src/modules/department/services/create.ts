@@ -42,16 +42,18 @@ export async function createDepartment(
   let updated = 0;
   let created = 0;
 
-  await Promise.all(
-    departmentsData.map(async (d) => {
-      const isNew = !existingIds.has(d.id);
-      if (isNew) {
-        created++;
-      } else {
-        updated++;
-      }
+  const batchSize = 50;
 
-      return prisma.department.upsert({
+  for (let i = 0; i < departmentsData.length; i += batchSize) {
+    const batch = departmentsData.slice(i, i + batchSize);
+
+    for (const d of batch) {
+      const isNew = !existingIds.has(d.id);
+
+      if (isNew) created++;
+      else updated++;
+
+      await prisma.department.upsert({
         where: { id: d.id },
         update: {
           department_name: d.department_name,
@@ -65,8 +67,8 @@ export async function createDepartment(
           department_status: d.department_status,
         },
       });
-    }),
-  );
+    }
+  }
 
   return {
     success: true,

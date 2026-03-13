@@ -18,6 +18,10 @@ export interface UserRequest extends Request {
       divisionId: number;
       ofiiceId: number;
       unitId: number;
+      division: {
+        id: number;
+        branch_id: number | null;
+      } | null;
     };
   };
 }

@@ -41,16 +41,18 @@ export async function createOffice(
   let updated = 0;
   let created = 0;
 
-  await Promise.all(
-    officesData.map(async (d) => {
-      const isNew = !existingIds.has(d.id);
-      if (isNew) {
-        created++;
-      } else {
-        updated++;
-      }
+  const batchSize = 50;
 
-      return prisma.office.upsert({
+  for (let i = 0; i < officesData.length; i += batchSize) {
+    const batch = officesData.slice(i, i + batchSize);
+
+    for (const d of batch) {
+      const isNew = !existingIds.has(d.id);
+
+      if (isNew) created++;
+      else updated++;
+
+      await prisma.office.upsert({
         where: { id: d.id },
         update: {
           office_name: d.office_name,
@@ -66,8 +68,8 @@ export async function createOffice(
           divisionId: d.divisionId,
         },
       });
-    }),
-  );
+    }
+  }
 
   return {
     success: true,

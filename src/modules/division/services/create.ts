@@ -42,16 +42,18 @@ export async function createDivision(
   let updated = 0;
   let created = 0;
 
-  await Promise.all(
-    divisionsData.map(async (d) => {
-      const isNew = !existingIds.has(d.id);
-      if (isNew) {
-        created++;
-      } else {
-        updated++;
-      }
+  const batchSize = 50;
 
-      return prisma.division.upsert({
+  for (let i = 0; i < divisionsData.length; i += batchSize) {
+    const batch = divisionsData.slice(i, i + batchSize);
+
+    for (const d of batch) {
+      const isNew = !existingIds.has(d.id);
+
+      if (isNew) created++;
+      else updated++;
+
+      await prisma.division.upsert({
         where: { id: d.id },
         update: {
           division_name: d.division_name,
@@ -69,8 +71,8 @@ export async function createDivision(
           departmentId: d.departmentId,
         },
       });
-    }),
-  );
+    }
+  }
 
   return {
     success: true,

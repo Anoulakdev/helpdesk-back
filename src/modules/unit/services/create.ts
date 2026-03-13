@@ -43,16 +43,18 @@ export async function createUnit(
   let updated = 0;
   let created = 0;
 
-  await Promise.all(
-    unitsData.map(async (d) => {
-      const isNew = !existingIds.has(d.id);
-      if (isNew) {
-        created++;
-      } else {
-        updated++;
-      }
+  const batchSize = 50;
 
-      return prisma.unit.upsert({
+  for (let i = 0; i < unitsData.length; i += batchSize) {
+    const batch = unitsData.slice(i, i + batchSize);
+
+    for (const d of batch) {
+      const isNew = !existingIds.has(d.id);
+
+      if (isNew) created++;
+      else updated++;
+
+      await prisma.unit.upsert({
         where: { id: d.id },
         update: {
           unit_name: d.unit_name,
@@ -72,8 +74,8 @@ export async function createUnit(
           officeId: d.officeId,
         },
       });
-    }),
-  );
+    }
+  }
 
   return {
     success: true,

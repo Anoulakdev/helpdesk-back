@@ -15,5 +15,9 @@ export interface AuthUser {
     divisionId: number;
     ofiiceId: number;
     unitId: number;
+    division: {
+      id: number;
+      branch_id: number | null;
+    } | null;
   };
 }

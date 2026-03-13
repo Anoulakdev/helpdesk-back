@@ -33,6 +33,10 @@ type User = {
     divisionId: number | null;
     officeId: number | null;
     unitId: number | null;
+    division: {
+      id: number;
+      branch_id: number | null;
+    } | null;
   };
 };
 
@@ -56,7 +60,16 @@ export class AuthService {
         status: true,
         employeeId: true,
         roleId: true,
-        employee: true,
+        employee: {
+          include: {
+            division: {
+              select: {
+                id: true,
+                branch_id: true,
+              },
+            },
+          },
+        },
       },
     });
 
@@ -92,6 +105,7 @@ export class AuthService {
       divisionId: user.employee.divisionId,
       officeId: user.employee.officeId,
       unitId: user.employee.unitId,
+      // branch_id: user.employee.division?.branch_id,
     };
 
     const expiresIn = '10h';
