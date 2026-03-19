@@ -10,6 +10,7 @@ export async function reportStaff(
 ) {
   const where = {
     assignedToId: user.id,
+    helpdeskStatusId: 4,
     helpdeskRequest: {
       createdAt: {
         gte: new Date(`${startDate}T00:00:00+07:00`),

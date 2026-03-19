@@ -30,6 +30,7 @@ export async function userFindAll(
       priority: true,
       assignments: {
         select: {
+          helpdeskStatus: true,
           assignedTo: {
             select: {
               id: true,
@@ -39,6 +40,8 @@ export async function userFindAll(
                   first_name: true,
                   last_name: true,
                   gender: true,
+                  emp_code: true,
+                  tel: true,
                 },
               },
             },
