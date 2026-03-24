@@ -49,7 +49,7 @@ export async function adminFindAll(
         },
       },
       assignments: {
-        select: {
+        include: {
           helpdeskStatus: true,
           assignedTo: {
             select: {

@@ -52,6 +52,9 @@ export async function findOneHDRequest(prisma: PrismaService, id: number) {
         },
       },
       assignments: {
+        where: {
+          helpdeskStatusId: { in: [4, 5, 6, 8] }, // ✅ แก้ไขตรงนี้
+        },
         include: {
           helpdeskStatus: true,
           assignedTo: {
