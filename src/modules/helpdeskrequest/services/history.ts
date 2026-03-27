@@ -42,7 +42,7 @@ export async function sktHistory(
         },
       },
       assignments: {
-        select: {
+        include: {
           assignedTo: {
             select: {
               id: true,
