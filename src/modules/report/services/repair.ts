@@ -10,6 +10,7 @@ export async function reportRepair(
   endDate: string,
 ) {
   const where = {
+    helpdeskStatusId: 4,
     helpdeskRequest: {
       ticket: {
         category: {
@@ -31,6 +32,8 @@ export async function reportRepair(
       id: 'asc',
     },
     select: {
+      id: true,
+      helpdeskStatusId: true,
       assignedTo: {
         select: {
           id: true,
