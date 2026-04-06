@@ -43,6 +43,14 @@ export class CreateHelpdeskrequestDto {
   @IsOptional()
   details?: string;
 
+  @IsInt()
+  @IsOptional()
+  yearUse?: number;
+
+  @IsString()
+  @IsOptional()
+  yearToyear?: string;
+
   @IsOptional()
   @IsArray()
   @IsString({ each: true })

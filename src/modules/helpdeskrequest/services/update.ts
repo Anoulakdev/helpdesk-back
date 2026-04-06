@@ -85,6 +85,8 @@ export async function updateHDRequest(
         numberSKT: dto.numberSKT,
         telephone: Number(dto.telephone),
         details: dto.details,
+        yearUse: Number(dto.yearUse),
+        yearToyear: dto.yearToyear,
         priorityId: dto.priorityId ? Number(dto.priorityId) : null,
         hdFile: newHdFile ?? null,
       },

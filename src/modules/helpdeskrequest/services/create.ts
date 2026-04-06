@@ -20,6 +20,7 @@ export async function createHDRequest(
         floorId: Number(createHelpdeskrequestDto.floorId),
         turningId: Number(createHelpdeskrequestDto.turningId),
         telephone: Number(createHelpdeskrequestDto.telephone),
+        yearUse: Number(createHelpdeskrequestDto.yearUse),
         createdById: user.id,
         hdFile: hdFileName ?? null,
         hdImgs: hdImgNames?.length
