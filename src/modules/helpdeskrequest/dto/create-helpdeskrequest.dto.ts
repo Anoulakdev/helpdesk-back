@@ -35,9 +35,9 @@ export class CreateHelpdeskrequestDto {
   @IsNotEmpty()
   numberSKT: string;
 
-  @IsInt()
+  @IsString()
   @IsNotEmpty()
-  telephone: number;
+  telephone: string;
 
   @IsString()
   @IsOptional()
@@ -50,6 +50,14 @@ export class CreateHelpdeskrequestDto {
   @IsString()
   @IsOptional()
   yearToyear?: string;
+
+  @IsInt()
+  @IsOptional()
+  typeDeviceId?: number;
+
+  @IsInt()
+  @IsOptional()
+  brandId?: number;
 
   @IsOptional()
   @IsArray()

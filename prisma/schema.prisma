@@ -29,6 +29,9 @@ model User {
   chats            Chat[]
   categories       Category[]
   tickets          Ticket[]
+  typeDevices      TypeDevice[]
+  brands           Brand[]
+  eliminates       Eliminate[]
 }
 
 model Employee {
@@ -136,16 +139,17 @@ model Role {
 }
 
 model HeadCategory {
-  id           Int        @id @default(autoincrement())
-  name         String     @db.VarChar(255)
-  description  String?    @db.Text
+  id           Int          @id @default(autoincrement())
+  name         String       @db.VarChar(255)
+  description  String?      @db.Text
   departmentId Int
-  department   Department @relation(fields: [departmentId], references: [id])
+  department   Department   @relation(fields: [departmentId], references: [id])
   divisionId   Int
-  division     Division   @relation(fields: [divisionId], references: [id])
-  createdAt    DateTime   @default(now()) @db.Timestamptz(0)
-  updatedAt    DateTime   @updatedAt @db.Timestamptz(0)
+  division     Division     @relation(fields: [divisionId], references: [id])
+  createdAt    DateTime     @default(now()) @db.Timestamptz(0)
+  updatedAt    DateTime     @updatedAt @db.Timestamptz(0)
   categories   Category[]
+  typeDevices  TypeDevice[]
 }
 
 model Category {
@@ -161,6 +165,8 @@ model Category {
   createdById    Int
   createdBy      User          @relation(fields: [createdById], references: [id])
   tickets        Ticket[]
+
+  @@index([headCategoryId])
 }
 
 model Ticket {
@@ -176,6 +182,35 @@ model Ticket {
   helpdeskRequests HelpdeskRequest[]
 
   @@index([categoryId])
+}
+
+model TypeDevice {
+  id               Int               @id @default(autoincrement())
+  headCategoryId   Int
+  headCategory     HeadCategory      @relation(fields: [headCategoryId], references: [id])
+  name             String            @db.VarChar(255)
+  createdAt        DateTime          @default(now()) @db.Timestamptz(0)
+  updatedAt        DateTime          @updatedAt @db.Timestamptz(0)
+  createdById      Int
+  createdBy        User              @relation(fields: [createdById], references: [id])
+  helpdeskRequests HelpdeskRequest[]
+  brands           Brand[]
+
+  @@index([headCategoryId])
+}
+
+model Brand {
+  id               Int               @id @default(autoincrement())
+  typeDeviceId     Int
+  typeDevice       TypeDevice        @relation(fields: [typeDeviceId], references: [id])
+  name             String            @db.VarChar(255)
+  createdAt        DateTime          @default(now()) @db.Timestamptz(0)
+  updatedAt        DateTime          @updatedAt @db.Timestamptz(0)
+  createdById      Int
+  createdBy        User              @relation(fields: [createdById], references: [id])
+  helpdeskRequests HelpdeskRequest[]
+
+  @@index([typeDeviceId])
 }
 
 model CategoryIcon {
@@ -214,6 +249,20 @@ model HelpdeskStatus {
   assignments      Assignment[]
 }
 
+model Eliminate {
+  id                Int             @id @default(autoincrement())
+  helpdeskRequestId Int             @unique
+  helpdeskRequest   HelpdeskRequest @relation(fields: [helpdeskRequestId], references: [id])
+  comment           String?         @db.Text
+  eliminatefile     String?         @db.VarChar(255)
+  createdAt         DateTime        @default(now()) @db.Timestamptz(0)
+  updatedAt         DateTime        @updatedAt @db.Timestamptz(0)
+  createdById       Int
+  createdBy         User            @relation(fields: [createdById], references: [id])
+
+  @@index([helpdeskRequestId])
+}
+
 model HelpdeskRequest {
   id               Int            @id @default(autoincrement())
   ticketId         Int
@@ -228,10 +277,14 @@ model HelpdeskRequest {
   turning          Turning        @relation(fields: [turningId], references: [id])
   room             String?        @db.VarChar(255)
   numberSKT        String?        @db.VarChar(255)
-  telephone        Int
+  telephone        String         @db.VarChar(50)
   details          String?        @db.Text
   yearUse          Int?
   yearToyear       String?        @db.VarChar(255)
+  typeDeviceId     Int?
+  typeDevice       TypeDevice?    @relation(fields: [typeDeviceId], references: [id])
+  brandId          Int?
+  brand            Brand?         @relation(fields: [brandId], references: [id])
   hdImgs           HelpdeskImg[]
   hdFile           String?        @db.VarChar(255)
   priorityId       Int?
@@ -242,8 +295,9 @@ model HelpdeskRequest {
   updatedAt        DateTime       @updatedAt @db.Timestamptz(0)
   assignments      Assignment[]
   chats            Chat[]
+  eliminate        Eliminate?
 
-  @@index([numberSKT, helpdeskStatusId])
+  @@index([numberSKT, helpdeskStatusId, createdById, ticketId])
 }
 
 model HelpdeskImg {

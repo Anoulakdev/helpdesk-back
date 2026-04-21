@@ -27,6 +27,8 @@ import { HelpdeskrequestModule } from './modules/helpdeskrequest/helpdeskrequest
 import { AssignmentModule } from './modules/assignment/assignment.module';
 import { ChatModule } from './modules/chat/chat.module';
 import { ReportModule } from './modules/report/report.module';
+import { TypedeviceModule } from './modules/typedevice/typedevice.module';
+import { BrandModule } from './modules/brand/brand.module';
 
 @Module({
   imports: [
@@ -55,6 +57,8 @@ import { ReportModule } from './modules/report/report.module';
     AssignmentModule,
     ChatModule,
     ReportModule,
+    TypedeviceModule,
+    BrandModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService],
