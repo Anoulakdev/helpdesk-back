@@ -29,6 +29,7 @@ import { ChatModule } from './modules/chat/chat.module';
 import { ReportModule } from './modules/report/report.module';
 import { TypedeviceModule } from './modules/typedevice/typedevice.module';
 import { BrandModule } from './modules/brand/brand.module';
+import { EliminateModule } from './modules/eliminate/eliminate.module';
 
 @Module({
   imports: [
@@ -59,6 +60,7 @@ import { BrandModule } from './modules/brand/brand.module';
     ReportModule,
     TypedeviceModule,
     BrandModule,
+    EliminateModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService],

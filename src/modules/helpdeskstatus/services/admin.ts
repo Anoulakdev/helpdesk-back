@@ -4,7 +4,7 @@ export async function adminHelpdeskStatus(prisma: PrismaService) {
   return prisma.helpdeskStatus.findMany({
     where: {
       id: {
-        in: [4, 5, 6, 7, 8],
+        in: [4, 5, 6, 7, 8, 9],
       },
     },
     orderBy: {

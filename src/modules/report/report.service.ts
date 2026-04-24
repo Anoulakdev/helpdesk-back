@@ -6,7 +6,8 @@ import { reportCategory } from './services/category';
 import { reportDepartment } from './services/department';
 import { reportRepair } from './services/repair';
 import { reportStaff } from './services/staff';
-
+import { numberskt } from './services/numberskt';
+import { reportEliminate } from './services/eliminate';
 @Injectable()
 export class ReportService {
   constructor(private prisma: PrismaService) {}
@@ -29,5 +30,13 @@ export class ReportService {
 
   reportStaff(user: AuthUser, startDate: string, endDate: string) {
     return reportStaff(this.prisma, user, startDate, endDate);
+  }
+
+  numberskt(numberSKT: string) {
+    return numberskt(this.prisma, numberSKT);
+  }
+
+  reportEliminate(user: AuthUser, startDate: string, endDate: string) {
+    return reportEliminate(this.prisma, user, startDate, endDate);
   }
 }

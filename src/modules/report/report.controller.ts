@@ -59,4 +59,20 @@ export class ReportController {
   ) {
     return this.reportService.reportStaff(req.user, startDate, endDate);
   }
+
+  @Get('numberskt')
+  @Roles(2, 3)
+  numberskt(@Query('numberSKT') numberSKT: string) {
+    return this.reportService.numberskt(numberSKT);
+  }
+
+  @Get('eliminate')
+  @Roles(2)
+  reportEliminate(
+    @Req() req: UserRequest,
+    @Query('startDate') startDate: string,
+    @Query('endDate') endDate: string,
+  ) {
+    return this.reportService.reportEliminate(req.user, startDate, endDate);
+  }
 }
