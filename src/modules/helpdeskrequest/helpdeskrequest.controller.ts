@@ -30,7 +30,7 @@ export class HelpdeskrequestController {
   ) {}
 
   @Post()
-  @Roles(4)
+  @Roles(2, 3, 4)
   @UseInterceptors(
     FileFieldsInterceptor(
       [
