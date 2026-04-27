@@ -27,7 +27,21 @@ export async function removeEliminate(prisma: PrismaService, id: number) {
     });
   }
 
-  await prisma.eliminate.delete({ where: { id } });
+  await prisma.$transaction([
+    // 1. update helpdesk status
+    prisma.helpdeskRequest.update({
+      where: { id: eliminate.helpdeskRequestId },
+      data: {
+        helpdeskStatusId: 6,
+      },
+    }),
+
+    // 2. delete eliminate
+    prisma.eliminate.delete({
+      where: { id },
+    }),
+  ]);
+
   return {
     statusCode: HttpStatus.OK,
     message: 'eliminate deleted successfully',
