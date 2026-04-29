@@ -30,7 +30,7 @@ export async function removeEliminate(prisma: PrismaService, id: number) {
   await prisma.$transaction([
     // 1. update helpdesk status
     prisma.helpdeskRequest.update({
-      where: { id: eliminate.helpdeskRequestId },
+      where: { id: Number(eliminate.helpdeskRequestId) },
       data: {
         helpdeskStatusId: 6,
       },
