@@ -13,6 +13,7 @@ export async function findOneHDRequest(prisma: PrismaService, id: number) {
           description: true,
         },
       },
+      eliminate: true,
       helpdeskStatus: true,
       building: true,
       floor: true,
