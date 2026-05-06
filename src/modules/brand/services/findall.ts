@@ -8,7 +8,7 @@ export async function findAllBrand(prisma: PrismaService, user: AuthUser) {
   }
   return prisma.brand.findMany({
     orderBy: {
-      id: 'asc',
+      typeDeviceId: 'asc',
     },
     where: {
       typeDevice: {
