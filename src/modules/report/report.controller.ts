@@ -46,8 +46,14 @@ export class ReportController {
     @Req() req: UserRequest,
     @Query('startDate') startDate: string,
     @Query('endDate') endDate: string,
+    @Query('helpdeskStatusId') helpdeskStatusId?: number,
   ) {
-    return this.reportService.reportRepair(req.user, startDate, endDate);
+    return this.reportService.reportRepair(
+      req.user,
+      startDate,
+      endDate,
+      helpdeskStatusId,
+    );
   }
 
   @Get('staff')
@@ -56,8 +62,14 @@ export class ReportController {
     @Req() req: UserRequest,
     @Query('startDate') startDate: string,
     @Query('endDate') endDate: string,
+    @Query('helpdeskStatusId') helpdeskStatusId?: number,
   ) {
-    return this.reportService.reportStaff(req.user, startDate, endDate);
+    return this.reportService.reportStaff(
+      req.user,
+      startDate,
+      endDate,
+      helpdeskStatusId,
+    );
   }
 
   @Get('numberskt')

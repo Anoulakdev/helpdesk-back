@@ -24,12 +24,28 @@ export class ReportService {
     return reportDepartment(this.prisma, user, startDate, endDate);
   }
 
-  reportRepair(user: AuthUser, startDate: string, endDate: string) {
-    return reportRepair(this.prisma, user, startDate, endDate);
+  reportRepair(
+    user: AuthUser,
+    startDate: string,
+    endDate: string,
+    helpdeskStatusId?: number,
+  ) {
+    return reportRepair(
+      this.prisma,
+      user,
+      startDate,
+      endDate,
+      helpdeskStatusId,
+    );
   }
 
-  reportStaff(user: AuthUser, startDate: string, endDate: string) {
-    return reportStaff(this.prisma, user, startDate, endDate);
+  reportStaff(
+    user: AuthUser,
+    startDate: string,
+    endDate: string,
+    helpdeskStatusId?: number,
+  ) {
+    return reportStaff(this.prisma, user, startDate, endDate, helpdeskStatusId);
   }
 
   numberskt(numberSKT: string) {

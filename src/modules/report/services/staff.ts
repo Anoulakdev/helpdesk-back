@@ -7,16 +7,20 @@ export async function reportStaff(
   user: AuthUser,
   startDate: string,
   endDate: string,
+  helpdeskStatusId?: number,
 ) {
   const where = {
     assignedToId: user.id,
-    helpdeskStatusId: 4,
+    // helpdeskStatusId: 4,
     helpdeskRequest: {
       createdAt: {
         gte: new Date(`${startDate}T00:00:00+07:00`),
         lte: new Date(`${endDate}T23:59:59+07:00`),
       },
     },
+    ...(helpdeskStatusId
+      ? { helpdeskStatusId: Number(helpdeskStatusId) }
+      : undefined),
   };
 
   const assigns = await prisma.assignment.findMany({
@@ -25,6 +29,7 @@ export async function reportStaff(
       id: 'asc',
     },
     include: {
+      helpdeskStatus: true,
       helpdeskRequest: {
         include: {
           ticket: {
@@ -39,7 +44,7 @@ export async function reportStaff(
               },
             },
           },
-          helpdeskStatus: true,
+          // helpdeskStatus: true,
           createdBy: {
             select: {
               id: true,
