@@ -15,12 +15,9 @@ export async function adminFindAll(
         },
       },
     },
-    helpdeskStatusId: {
-      in: [1, 2, 3, 4, 5, 6],
-    },
     ...(helpdeskStatusId
       ? { helpdeskStatusId: Number(helpdeskStatusId) }
-      : undefined),
+      : { helpdeskStatusId: { in: [1, 2, 3, 4, 5, 6] } }),
   };
 
   const hdrequests = await prisma.helpdeskRequest.findMany({
