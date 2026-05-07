@@ -54,8 +54,8 @@ export async function findAllUser(
       page,
       limit,
       totalPages: Math.ceil(total / limit),
-      hasNextPage: page < Math.ceil(total / limit),
-      hasPrevPage: page > 1,
+      NextPage: page < Math.ceil(total / limit),
+      PrevPage: page > 1,
     },
   };
 }
