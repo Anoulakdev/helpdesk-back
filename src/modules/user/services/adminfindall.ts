@@ -9,7 +9,7 @@ export async function adminFindAll(prisma: PrismaService, user: AuthUser) {
       },
     },
     orderBy: {
-      id: 'asc',
+      username: 'asc',
     },
     select: {
       id: true,

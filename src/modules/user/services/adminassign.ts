@@ -10,7 +10,7 @@ export async function adminAssign(prisma: PrismaService, user: AuthUser) {
       roleId: 3,
     },
     orderBy: {
-      id: 'asc',
+      username: 'asc',
     },
     select: {
       id: true,

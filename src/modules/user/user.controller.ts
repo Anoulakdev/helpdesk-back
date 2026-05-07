@@ -31,8 +31,16 @@ export class UserController {
 
   @Get()
   @Roles(1)
-  findAll(@Query('divisionId') divisionId?: number) {
-    return this.userService.findAll(divisionId);
+  findAll(
+    @Query('divisionId') divisionId?: number,
+    @Query('page') page?: number,
+    @Query('limit') limit?: number,
+  ) {
+    return this.userService.findAll(
+      divisionId ? Number(divisionId) : undefined,
+      page ? Number(page) : 1,
+      limit ? Number(limit) : 10,
+    );
   }
 
   @Get('admin')
