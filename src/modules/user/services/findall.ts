@@ -1,3 +1,4 @@
+import { Prisma } from '@prisma/client';
 import { PrismaService } from '../../../prisma/prisma.service';
 
 export async function findAllUser(
@@ -5,23 +6,87 @@ export async function findAllUser(
   divisionId?: number,
   page: number = 1,
   limit: number = 10,
+  search?: string,
 ) {
   const skip = (page - 1) * limit;
 
-  const where = divisionId
-    ? {
-        employee: {
-          divisionId: Number(divisionId),
-        },
-      }
-    : undefined;
+  const where: Prisma.UserWhereInput = {
+    ...(divisionId && {
+      employee: {
+        divisionId: Number(divisionId),
+      },
+    }),
 
-  // total count
+    ...(search && {
+      OR: [
+        {
+          username: {
+            contains: search,
+            mode: Prisma.QueryMode.insensitive,
+          },
+        },
+        {
+          employee: {
+            first_name: {
+              contains: search,
+              mode: Prisma.QueryMode.insensitive,
+            },
+          },
+        },
+        {
+          employee: {
+            last_name: {
+              contains: search,
+              mode: Prisma.QueryMode.insensitive,
+            },
+          },
+        },
+        {
+          employee: {
+            tel: {
+              contains: search,
+              mode: Prisma.QueryMode.insensitive,
+            },
+          },
+        },
+        {
+          employee: {
+            department: {
+              department_name: {
+                contains: search,
+                mode: Prisma.QueryMode.insensitive,
+              },
+            },
+          },
+        },
+        {
+          employee: {
+            division: {
+              division_name: {
+                contains: search,
+                mode: Prisma.QueryMode.insensitive,
+              },
+            },
+          },
+        },
+        {
+          employee: {
+            position: {
+              pos_name: {
+                contains: search,
+                mode: Prisma.QueryMode.insensitive,
+              },
+            },
+          },
+        },
+      ],
+    }),
+  };
+
   const total = await prisma.user.count({
     where,
   });
 
-  // data
   const data = await prisma.user.findMany({
     where,
     skip,

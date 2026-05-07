@@ -35,11 +35,13 @@ export class UserController {
     @Query('divisionId') divisionId?: number,
     @Query('page') page?: number,
     @Query('limit') limit?: number,
+    @Query('search') search?: string,
   ) {
     return this.userService.findAll(
       divisionId ? Number(divisionId) : undefined,
       page ? Number(page) : 1,
       limit ? Number(limit) : 10,
+      search ? search : undefined,
     );
   }
 

@@ -22,8 +22,8 @@ export class UserService {
     return createUser(this.prisma);
   }
 
-  findAll(divisionId?: number, page?: number, limit?: number) {
-    return findAllUser(this.prisma, divisionId, page, limit);
+  findAll(divisionId?: number, page?: number, limit?: number, search?: string) {
+    return findAllUser(this.prisma, divisionId, page, limit, search);
   }
 
   adminFindAll(user: AuthUser) {
