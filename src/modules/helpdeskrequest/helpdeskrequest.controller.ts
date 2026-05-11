@@ -11,6 +11,8 @@ import {
   UploadedFiles,
   UseGuards,
   Query,
+  Sse,
+  MessageEvent,
 } from '@nestjs/common';
 import { HelpdeskrequestService } from './helpdeskrequest.service';
 import { CreateHelpdeskrequestDto } from './dto/create-helpdeskrequest.dto';
@@ -21,6 +23,7 @@ import { multerConfig } from '../../config/multer.config';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { RolesGuard } from '../auth/guards/roles.guard';
+import { Observable, interval, switchMap, map, startWith } from 'rxjs';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('helpdeskrequests')
@@ -60,14 +63,33 @@ export class HelpdeskrequestController {
     );
   }
 
-  @Get('admin')
+  @Sse('admin')
   @Roles(2)
-  adminFindAll(
+  streamHDR(
     @Req() req: UserRequest,
     @Query('helpdeskStatusId') helpdeskStatusId?: number,
-  ) {
-    return this.helpdeskrequestService.adminFindAll(req.user, helpdeskStatusId);
+  ): Observable<MessageEvent> {
+    // ส่งข้อมูลทุก 10 วินาที (หรือเปลี่ยนได้ตามต้องการ)
+    return interval(10000).pipe(
+      startWith(0),
+      switchMap(() =>
+        this.helpdeskrequestService.adminFindAll(req.user, helpdeskStatusId),
+      ),
+      map((data) => ({
+        data,
+        retry: 3000, // ถ้าหลุด reconnect ภายใน 3 วิ
+      })),
+    );
   }
+
+  // @Get('admin')
+  // @Roles(2)
+  // adminFindAll(
+  //   @Req() req: UserRequest,
+  //   @Query('helpdeskStatusId') helpdeskStatusId?: number,
+  // ) {
+  //   return this.helpdeskrequestService.adminFindAll(req.user, helpdeskStatusId);
+  // }
 
   @Get('user')
   @Roles(2, 3, 4)
