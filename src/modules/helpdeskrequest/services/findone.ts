@@ -29,6 +29,8 @@ export async function findOneHDRequest(prisma: PrismaService, id: number) {
               last_name: true,
               gender: true,
               emp_code: true,
+              empimg: true,
+              tel: true,
               department: {
                 select: {
                   id: true,

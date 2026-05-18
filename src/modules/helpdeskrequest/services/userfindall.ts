@@ -41,6 +41,7 @@ export async function userFindAll(
                   last_name: true,
                   gender: true,
                   emp_code: true,
+                  empimg: true,
                   tel: true,
                 },
               },

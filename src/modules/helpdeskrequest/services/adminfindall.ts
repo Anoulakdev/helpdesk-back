@@ -61,6 +61,7 @@ export async function adminFindAll(
                   last_name: true,
                   gender: true,
                   emp_code: true,
+                  empimg: true,
                   tel: true,
                 },
               },
