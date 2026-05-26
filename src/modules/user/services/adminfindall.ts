@@ -9,7 +9,11 @@ export async function adminFindAll(prisma: PrismaService, user: AuthUser) {
       },
     },
     orderBy: {
-      username: 'asc',
+      employee: {
+        position: {
+          poscodeId: 'asc',
+        },
+      },
     },
     select: {
       id: true,

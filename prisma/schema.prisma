@@ -261,6 +261,7 @@ model Eliminate {
   createdBy         User            @relation(fields: [createdById], references: [id])
 
   @@index([helpdeskRequestId])
+  @@index([createdAt])
 }
 
 model HelpdeskRequest {
@@ -297,7 +298,11 @@ model HelpdeskRequest {
   chats            Chat[]
   eliminate        Eliminate?
 
-  @@index([numberSKT, helpdeskStatusId, createdById, ticketId])
+  @@index([numberSKT])
+  @@index([helpdeskStatusId])
+  @@index([createdById])
+  @@index([ticketId])
+  @@index([createdAt])
 }
 
 model HelpdeskImg {
@@ -340,4 +345,7 @@ model Chat {
   message           String          @db.Text
   createdAt         DateTime        @default(now()) @db.Timestamptz(0)
   updatedAt         DateTime?       @updatedAt @db.Timestamptz(0)
+
+  @@index([helpdeskRequestId])
+  @@index([senderId])
 }
