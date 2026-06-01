@@ -23,7 +23,7 @@ import { multerConfig } from '../../config/multer.config';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { RolesGuard } from '../auth/guards/roles.guard';
-import { Observable, interval, switchMap, map, startWith } from 'rxjs';
+import { Observable, map } from 'rxjs';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('helpdeskrequests')
@@ -69,15 +69,10 @@ export class HelpdeskrequestController {
     @Req() req: UserRequest,
     @Query('helpdeskStatusId') helpdeskStatusId?: number,
   ): Observable<MessageEvent> {
-    // ส่งข้อมูลทุก 10 วินาที (หรือเปลี่ยนได้ตามต้องการ)
-    return interval(10000).pipe(
-      startWith(0),
-      switchMap(() =>
-        this.helpdeskrequestService.adminFindAll(req.user, helpdeskStatusId),
-      ),
+    return this.helpdeskrequestService.getAdminStream(req.user, helpdeskStatusId).pipe(
       map((data) => ({
         data,
-        retry: 3000, // ถ้าหลุด reconnect ภายใน 3 วิ
+        retry: 3000, // Reconnect within 3 seconds if disconnected
       })),
     );
   }

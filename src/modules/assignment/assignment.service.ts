@@ -7,24 +7,31 @@ import { createAssignment } from './services/create';
 import { findAllAssignment } from './services/findall';
 import { acceptAssignment } from './services/accept';
 import { updateAssignment } from './services/update';
+import { notifyHelpdeskUpdate } from '../../utils/event-bus';
 
 @Injectable()
 export class AssignmentService {
   constructor(private prisma: PrismaService) {}
 
-  create(createAssignmentDto: CreateAssignmentDto) {
-    return createAssignment(this.prisma, createAssignmentDto);
+  async create(createAssignmentDto: CreateAssignmentDto) {
+    const result = await createAssignment(this.prisma, createAssignmentDto);
+    notifyHelpdeskUpdate();
+    return result;
   }
 
   findAll(user: AuthUser, helpdeskStatusId?: number) {
     return findAllAssignment(this.prisma, user, helpdeskStatusId);
   }
 
-  acceptAssignment(updateAssignmentDto: UpdateAssignmentDto) {
-    return acceptAssignment(this.prisma, updateAssignmentDto);
+  async acceptAssignment(updateAssignmentDto: UpdateAssignmentDto) {
+    const result = await acceptAssignment(this.prisma, updateAssignmentDto);
+    notifyHelpdeskUpdate();
+    return result;
   }
 
-  update(id: number, updateAssignmentDto: UpdateAssignmentDto) {
-    return updateAssignment(this.prisma, id, updateAssignmentDto);
+  async update(id: number, updateAssignmentDto: UpdateAssignmentDto) {
+    const result = await updateAssignment(this.prisma, id, updateAssignmentDto);
+    notifyHelpdeskUpdate();
+    return result;
   }
 }

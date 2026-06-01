@@ -8,22 +8,25 @@ import { FindAllEliminate } from './services/findall';
 import { findOneEliminate } from './services/findone';
 import { updateEliminate } from './services/update';
 import { removeEliminate } from './services/remove';
+import { notifyHelpdeskUpdate } from '../../utils/event-bus';
 
 @Injectable()
 export class EliminateService {
   constructor(private prisma: PrismaService) {}
 
-  create(
+  async create(
     createEliminateDto: CreateEliminateDto,
     user: AuthUser,
     Eliminatefilename: string,
   ) {
-    return createEliminate(
+    const result = await createEliminate(
       this.prisma,
       user,
       createEliminateDto,
       Eliminatefilename,
     );
+    notifyHelpdeskUpdate();
+    return result;
   }
 
   findAll(user: AuthUser) {
@@ -34,11 +37,15 @@ export class EliminateService {
     return findOneEliminate(this.prisma, id);
   }
 
-  update(id: number, user: AuthUser, updateEliminateDto: UpdateEliminateDto) {
-    return updateEliminate(this.prisma, id, user, updateEliminateDto);
+  async update(id: number, user: AuthUser, updateEliminateDto: UpdateEliminateDto) {
+    const result = await updateEliminate(this.prisma, id, user, updateEliminateDto);
+    notifyHelpdeskUpdate();
+    return result;
   }
 
-  remove(id: number) {
-    return removeEliminate(this.prisma, id);
+  async remove(id: number) {
+    const result = await removeEliminate(this.prisma, id);
+    notifyHelpdeskUpdate();
+    return result;
   }
 }
