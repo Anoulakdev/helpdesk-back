@@ -30,6 +30,7 @@ import { ReportModule } from './modules/report/report.module';
 import { TypedeviceModule } from './modules/typedevice/typedevice.module';
 import { BrandModule } from './modules/brand/brand.module';
 import { EliminateModule } from './modules/eliminate/eliminate.module';
+import { NotificationModule } from './modules/notification/notification.module';
 
 @Module({
   imports: [
@@ -61,6 +62,7 @@ import { EliminateModule } from './modules/eliminate/eliminate.module';
     TypedeviceModule,
     BrandModule,
     EliminateModule,
+    NotificationModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService],

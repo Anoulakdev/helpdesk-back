@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -19,19 +13,20 @@ model User {
   password         String
   status           String            @default("A") @db.VarChar(50)
   employeeId       Int
-  employee         Employee          @relation(fields: [employeeId], references: [id])
   roleId           Int
-  role             Role              @relation(fields: [roleId], references: [id])
   createdAt        DateTime          @default(now()) @db.Timestamptz(0)
   updatedAt        DateTime          @updatedAt @db.Timestamptz(0)
-  helpdeskRequests HelpdeskRequest[]
   assignments      Assignment[]
-  chats            Chat[]
+  brands           Brand[]
   categories       Category[]
+  chats            Chat[]
+  eliminates       Eliminate[]
+  helpdeskRequests HelpdeskRequest[]
   tickets          Ticket[]
   typeDevices      TypeDevice[]
-  brands           Brand[]
-  eliminates       Eliminate[]
+  employee         Employee          @relation(fields: [employeeId], references: [id])
+  role             Role              @relation(fields: [roleId], references: [id])
+  notifications    Notification[]
 }
 
 model Employee {
@@ -45,17 +40,17 @@ model Employee {
   email        String?     @db.VarChar(255)
   empimg       String?     @db.VarChar(255)
   posId        Int?
-  position     Position?   @relation(fields: [posId], references: [id])
   departmentId Int?
-  department   Department? @relation(fields: [departmentId], references: [id])
   divisionId   Int?
-  division     Division?   @relation(fields: [divisionId], references: [id])
   officeId     Int?
-  office       Office?     @relation(fields: [officeId], references: [id])
   unitId       Int?
-  unit         Unit?       @relation(fields: [unitId], references: [id])
   createdAt    DateTime    @default(now()) @db.Timestamptz(0)
   updatedAt    DateTime    @updatedAt @db.Timestamptz(0)
+  department   Department? @relation(fields: [departmentId], references: [id])
+  division     Division?   @relation(fields: [divisionId], references: [id])
+  office       Office?     @relation(fields: [officeId], references: [id])
+  position     Position?   @relation(fields: [posId], references: [id])
+  unit         Unit?       @relation(fields: [unitId], references: [id])
   user         User[]
 }
 
@@ -77,10 +72,10 @@ model Division {
   branch_id       Int?
   departmentId    Int
   department      Department     @relation(fields: [departmentId], references: [id])
-  offices         Office[]
-  units           Unit[]
   employees       Employee[]
   headCategories  HeadCategory[]
+  offices         Office[]
+  units           Unit[]
 }
 
 model Office {
@@ -89,9 +84,9 @@ model Office {
   office_code   String?    @db.VarChar(50)
   office_status String     @default("A") @db.VarChar(50)
   divisionId    Int?
+  employees     Employee[]
   division      Division?  @relation(fields: [divisionId], references: [id])
   units         Unit[]
-  employees     Employee[]
 }
 
 model Unit {
@@ -101,10 +96,10 @@ model Unit {
   unit_status String     @default("A") @db.VarChar(50)
   unit_type   String?    @db.VarChar(50)
   divisionId  Int?
-  division    Division?  @relation(fields: [divisionId], references: [id])
   officeId    Int?
-  office      Office?    @relation(fields: [officeId], references: [id])
   employees   Employee[]
+  division    Division?  @relation(fields: [divisionId], references: [id])
+  office      Office?    @relation(fields: [officeId], references: [id])
 }
 
 model PositionGroup {
@@ -118,8 +113,8 @@ model PositionCode {
   pos_code_name   String         @db.VarChar(255)
   pos_code_status String         @default("A") @db.VarChar(50)
   posgroupId      Int?
-  positiongroup   PositionGroup? @relation(fields: [posgroupId], references: [id])
   positions       Position[]
+  positiongroup   PositionGroup? @relation(fields: [posgroupId], references: [id])
 }
 
 model Position {
@@ -127,8 +122,8 @@ model Position {
   pos_name     String        @db.VarChar(255)
   pos_status   String        @default("A") @db.VarChar(50)
   poscodeId    Int?
-  positioncode PositionCode? @relation(fields: [poscodeId], references: [id])
   employees    Employee[]
+  positioncode PositionCode? @relation(fields: [poscodeId], references: [id])
 }
 
 model Role {
@@ -141,29 +136,29 @@ model Role {
 model HeadCategory {
   id           Int          @id @default(autoincrement())
   name         String       @db.VarChar(255)
-  description  String?      @db.Text
+  description  String?
   departmentId Int
-  department   Department   @relation(fields: [departmentId], references: [id])
   divisionId   Int
-  division     Division     @relation(fields: [divisionId], references: [id])
   createdAt    DateTime     @default(now()) @db.Timestamptz(0)
   updatedAt    DateTime     @updatedAt @db.Timestamptz(0)
   categories   Category[]
+  department   Department   @relation(fields: [departmentId], references: [id])
+  division     Division     @relation(fields: [divisionId], references: [id])
   typeDevices  TypeDevice[]
 }
 
 model Category {
   id             Int           @id @default(autoincrement())
   headCategoryId Int
-  headCategory   HeadCategory  @relation(fields: [headCategoryId], references: [id])
   title          String        @db.VarChar(255)
-  description    String?       @db.Text
+  description    String?
   catIconId      Int?
-  catIcon        CategoryIcon? @relation(fields: [catIconId], references: [id])
   createdAt      DateTime      @default(now()) @db.Timestamptz(0)
-  updatedAt      DateTime      @updatedAt @db.Timestamptz(0)
   createdById    Int
+  updatedAt      DateTime      @updatedAt @db.Timestamptz(0)
+  catIcon        CategoryIcon? @relation(fields: [catIconId], references: [id])
   createdBy      User          @relation(fields: [createdById], references: [id])
+  headCategory   HeadCategory  @relation(fields: [headCategoryId], references: [id])
   tickets        Ticket[]
 
   @@index([headCategoryId])
@@ -172,14 +167,14 @@ model Category {
 model Ticket {
   id               Int               @id @default(autoincrement())
   categoryId       Int
-  category         Category          @relation(fields: [categoryId], references: [id])
   title            String            @db.VarChar(255)
-  description      String?           @db.Text
+  description      String?
   createdAt        DateTime          @default(now()) @db.Timestamptz(0)
   updatedAt        DateTime          @updatedAt @db.Timestamptz(0)
   createdById      Int
-  createdBy        User              @relation(fields: [createdById], references: [id])
   helpdeskRequests HelpdeskRequest[]
+  category         Category          @relation(fields: [categoryId], references: [id])
+  createdBy        User              @relation(fields: [createdById], references: [id])
 
   @@index([categoryId])
 }
@@ -187,14 +182,14 @@ model Ticket {
 model TypeDevice {
   id               Int               @id @default(autoincrement())
   headCategoryId   Int
-  headCategory     HeadCategory      @relation(fields: [headCategoryId], references: [id])
   name             String            @db.VarChar(255)
   createdAt        DateTime          @default(now()) @db.Timestamptz(0)
   updatedAt        DateTime          @updatedAt @db.Timestamptz(0)
   createdById      Int
-  createdBy        User              @relation(fields: [createdById], references: [id])
-  helpdeskRequests HelpdeskRequest[]
   brands           Brand[]
+  helpdeskRequests HelpdeskRequest[]
+  createdBy        User              @relation(fields: [createdById], references: [id])
+  headCategory     HeadCategory      @relation(fields: [headCategoryId], references: [id])
 
   @@index([headCategoryId])
 }
@@ -202,12 +197,12 @@ model TypeDevice {
 model Brand {
   id               Int               @id @default(autoincrement())
   typeDeviceId     Int
-  typeDevice       TypeDevice        @relation(fields: [typeDeviceId], references: [id])
   name             String            @db.VarChar(255)
   createdAt        DateTime          @default(now()) @db.Timestamptz(0)
   updatedAt        DateTime          @updatedAt @db.Timestamptz(0)
   createdById      Int
   createdBy        User              @relation(fields: [createdById], references: [id])
+  typeDevice       TypeDevice        @relation(fields: [typeDeviceId], references: [id])
   helpdeskRequests HelpdeskRequest[]
 
   @@index([typeDeviceId])
@@ -229,8 +224,8 @@ model Building {
 model Floor {
   id               Int               @id @default(autoincrement())
   buildingId       Int
-  building         Building          @relation(fields: [buildingId], references: [id])
   name             String            @db.VarChar(255)
+  building         Building          @relation(fields: [buildingId], references: [id])
   helpdeskRequests HelpdeskRequest[]
 
   @@index([buildingId])
@@ -245,20 +240,20 @@ model Turning {
 model HelpdeskStatus {
   id               Int               @id @default(autoincrement())
   name             String            @db.VarChar(255)
-  helpdeskRequests HelpdeskRequest[]
   assignments      Assignment[]
+  helpdeskRequests HelpdeskRequest[]
 }
 
 model Eliminate {
   id                Int             @id @default(autoincrement())
   helpdeskRequestId Int             @unique
-  helpdeskRequest   HelpdeskRequest @relation(fields: [helpdeskRequestId], references: [id])
-  comment           String?         @db.Text
+  comment           String?
   eliminatefile     String?         @db.VarChar(255)
   createdAt         DateTime        @default(now()) @db.Timestamptz(0)
   updatedAt         DateTime        @updatedAt @db.Timestamptz(0)
   createdById       Int
   createdBy         User            @relation(fields: [createdById], references: [id])
+  helpdeskRequest   HelpdeskRequest @relation(fields: [helpdeskRequestId], references: [id])
 
   @@index([helpdeskRequestId])
   @@index([createdAt])
@@ -267,36 +262,37 @@ model Eliminate {
 model HelpdeskRequest {
   id               Int            @id @default(autoincrement())
   ticketId         Int
-  ticket           Ticket         @relation(fields: [ticketId], references: [id])
   helpdeskStatusId Int            @default(1)
-  helpdeskStatus   HelpdeskStatus @relation(fields: [helpdeskStatusId], references: [id])
   buildingId       Int
-  building         Building       @relation(fields: [buildingId], references: [id])
   floorId          Int
-  floor            Floor          @relation(fields: [floorId], references: [id])
   turningId        Int
-  turning          Turning        @relation(fields: [turningId], references: [id])
-  room             String?        @db.VarChar(255)
   numberSKT        String?        @db.VarChar(255)
   telephone        String         @db.VarChar(50)
-  details          String?        @db.Text
-  yearUse          Int?
-  yearToyear       String?        @db.VarChar(255)
-  typeDeviceId     Int?
-  typeDevice       TypeDevice?    @relation(fields: [typeDeviceId], references: [id])
-  brandId          Int?
-  brand            Brand?         @relation(fields: [brandId], references: [id])
-  hdImgs           HelpdeskImg[]
+  details          String?
   hdFile           String?        @db.VarChar(255)
   priorityId       Int?
-  priority         Priority?      @relation(fields: [priorityId], references: [id])
   createdById      Int
-  createdBy        User           @relation(fields: [createdById], references: [id])
   createdAt        DateTime       @default(now()) @db.Timestamptz(0)
   updatedAt        DateTime       @updatedAt @db.Timestamptz(0)
+  room             String?        @db.VarChar(255)
+  yearToyear       String?        @db.VarChar(255)
+  yearUse          Int?
+  brandId          Int?
+  typeDeviceId     Int?
   assignments      Assignment[]
   chats            Chat[]
   eliminate        Eliminate?
+  hdImgs           HelpdeskImg[]
+  brand            Brand?         @relation(fields: [brandId], references: [id])
+  building         Building       @relation(fields: [buildingId], references: [id])
+  createdBy        User           @relation(fields: [createdById], references: [id])
+  floor            Floor          @relation(fields: [floorId], references: [id])
+  helpdeskStatus   HelpdeskStatus @relation(fields: [helpdeskStatusId], references: [id])
+  priority         Priority?      @relation(fields: [priorityId], references: [id])
+  ticket           Ticket         @relation(fields: [ticketId], references: [id])
+  turning          Turning        @relation(fields: [turningId], references: [id])
+  typeDevice       TypeDevice?    @relation(fields: [typeDeviceId], references: [id])
+  notifications    Notification[]
 
   @@index([numberSKT])
   @@index([helpdeskStatusId])
@@ -308,8 +304,8 @@ model HelpdeskRequest {
 model HelpdeskImg {
   id                Int             @id @default(autoincrement())
   helpdeskRequestId Int
-  helpdeskRequest   HelpdeskRequest @relation(fields: [helpdeskRequestId], references: [id])
   hdImg             String          @db.VarChar(255)
+  helpdeskRequest   HelpdeskRequest @relation(fields: [helpdeskRequestId], references: [id])
 }
 
 model Priority {
@@ -321,17 +317,17 @@ model Priority {
 model Assignment {
   id                Int             @id @default(autoincrement())
   helpdeskRequestId Int
-  helpdeskRequest   HelpdeskRequest @relation(fields: [helpdeskRequestId], references: [id])
   assignedToId      Int
-  assignedTo        User            @relation(fields: [assignedToId], references: [id])
-  helpdeskStatusId  Int?
-  helpdeskStatus    HelpdeskStatus? @relation(fields: [helpdeskStatusId], references: [id])
-  comment           String?         @db.Text
-  commentImg        String?         @db.VarChar(255)
-  lat               Float?          @db.DoublePrecision
-  lng               Float?          @db.DoublePrecision
   assignedAt        DateTime        @default(now()) @db.Timestamptz(0)
+  comment           String?
+  commentImg        String?         @db.VarChar(255)
+  helpdeskStatusId  Int?
+  lat               Float?
+  lng               Float?
   updatedAt         DateTime?       @updatedAt @db.Timestamptz(0)
+  assignedTo        User            @relation(fields: [assignedToId], references: [id])
+  helpdeskRequest   HelpdeskRequest @relation(fields: [helpdeskRequestId], references: [id])
+  helpdeskStatus    HelpdeskStatus? @relation(fields: [helpdeskStatusId], references: [id])
 
   @@unique([helpdeskRequestId, assignedToId])
 }
@@ -342,10 +338,26 @@ model Chat {
   helpdeskRequest   HelpdeskRequest @relation(fields: [helpdeskRequestId], references: [id])
   senderId          Int
   sender            User            @relation(fields: [senderId], references: [id])
-  message           String          @db.Text
+  message           String
   createdAt         DateTime        @default(now()) @db.Timestamptz(0)
   updatedAt         DateTime?       @updatedAt @db.Timestamptz(0)
+  notifications     Notification[]
 
   @@index([helpdeskRequestId])
   @@index([senderId])
+}
+
+model Notification {
+  id                Int             @id @default(autoincrement())
+  userId            Int
+  user              User            @relation(fields: [userId], references: [id])
+  helpdeskRequestId Int
+  helpdeskRequest   HelpdeskRequest @relation(fields: [helpdeskRequestId], references: [id])
+  chatId            Int?
+  chat              Chat?           @relation(fields: [chatId], references: [id])
+  isRead            Boolean         @default(false)
+  createdAt         DateTime        @default(now())
+
+  @@index([userId])
+  @@index([helpdeskRequestId])
 }
