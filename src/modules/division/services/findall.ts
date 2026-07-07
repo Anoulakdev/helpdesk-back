@@ -11,7 +11,10 @@ export async function findAllDivision(
   return prisma.division.findMany({
     where: where,
     orderBy: {
-      id: 'asc',
+      departmentId: 'asc',
+    },
+    include: {
+      department: true,
     },
   });
 }

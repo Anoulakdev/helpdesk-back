@@ -6,7 +6,11 @@ export async function userFindAll(
   prisma: PrismaService,
   user: AuthUser,
   helpdeskStatusId?: number,
+  page: number = 1,
+  limit: number = 10,
 ) {
+  const skip = (page - 1) * limit;
+
   const where = {
     createdById: user.id,
     ...(helpdeskStatusId
@@ -14,8 +18,14 @@ export async function userFindAll(
       : undefined),
   };
 
+  const total = await prisma.helpdeskRequest.count({
+    where,
+  });
+
   const hdrequests = await prisma.helpdeskRequest.findMany({
     where,
+    skip,
+    take: limit,
     orderBy: {
       id: 'desc',
     },
@@ -52,11 +62,23 @@ export async function userFindAll(
     },
   });
 
-  return hdrequests.map((hdrequest) => {
+  const data = hdrequests.map((hdrequest) => {
     return {
       ...hdrequest,
       createdAt: moment(hdrequest.createdAt).tz('Asia/Vientiane').format(),
       updatedAt: moment(hdrequest.updatedAt).tz('Asia/Vientiane').format(),
     };
   });
+
+  return {
+    data,
+    pagination: {
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+      NextPage: page < Math.ceil(total / limit),
+      PrevPage: page > 1,
+    },
+  };
 }

@@ -68,13 +68,22 @@ export class HelpdeskrequestController {
   streamHDR(
     @Req() req: UserRequest,
     @Query('helpdeskStatusId') helpdeskStatusId?: number,
+    @Query('page') page?: number,
+    @Query('limit') limit?: number,
   ): Observable<MessageEvent> {
-    return this.helpdeskrequestService.getAdminStream(req.user, helpdeskStatusId).pipe(
-      map((data) => ({
-        data,
-        retry: 3000, // Reconnect within 3 seconds if disconnected
-      })),
-    );
+    return this.helpdeskrequestService
+      .getAdminStream(
+        req.user,
+        helpdeskStatusId,
+        page ? Number(page) : 1,
+        limit ? Number(limit) : 10,
+      )
+      .pipe(
+        map((data) => ({
+          data,
+          retry: 3000, // Reconnect within 3 seconds if disconnected
+        })),
+      );
   }
 
   // @Get('admin')
@@ -82,8 +91,15 @@ export class HelpdeskrequestController {
   // adminFindAll(
   //   @Req() req: UserRequest,
   //   @Query('helpdeskStatusId') helpdeskStatusId?: number,
+  //   @Query('page') page?: number,
+  //   @Query('limit') limit?: number,
   // ) {
-  //   return this.helpdeskrequestService.adminFindAll(req.user, helpdeskStatusId);
+  //   return this.helpdeskrequestService.adminFindAll(
+  //     req.user,
+  //     helpdeskStatusId,
+  //     page ? Number(page) : 1,
+  //     limit ? Number(limit) : 10,
+  //   );
   // }
 
   @Get('user')
@@ -91,8 +107,15 @@ export class HelpdeskrequestController {
   userFindAll(
     @Req() req: UserRequest,
     @Query('helpdeskStatusId') helpdeskStatusId?: number,
+    @Query('page') page?: number,
+    @Query('limit') limit?: number,
   ) {
-    return this.helpdeskrequestService.userFindAll(req.user, helpdeskStatusId);
+    return this.helpdeskrequestService.userFindAll(
+      req.user,
+      helpdeskStatusId,
+      page ? Number(page) : 1,
+      limit ? Number(limit) : 10,
+    );
   }
 
   @Get('history')

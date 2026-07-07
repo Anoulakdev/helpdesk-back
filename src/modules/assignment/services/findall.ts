@@ -6,7 +6,11 @@ export async function findAllAssignment(
   prisma: PrismaService,
   user: AuthUser,
   helpdeskStatusId?: number,
+  page: number = 1,
+  limit: number = 10,
 ) {
+  const skip = (page - 1) * limit;
+
   const where = {
     assignedToId: user.id,
     ...(helpdeskStatusId
@@ -14,8 +18,14 @@ export async function findAllAssignment(
       : undefined),
   };
 
+  const total = await prisma.assignment.count({
+    where,
+  });
+
   const assigns = await prisma.assignment.findMany({
     where,
+    skip,
+    take: limit,
     orderBy: {
       id: 'desc',
     },
@@ -50,7 +60,7 @@ export async function findAllAssignment(
     },
   });
 
-  return assigns.map((assign) => {
+  const data = assigns.map((assign) => {
     return {
       ...assign,
       assignedAt: moment(assign.assignedAt).tz('Asia/Vientiane').format(),
@@ -65,4 +75,16 @@ export async function findAllAssignment(
       },
     };
   });
+
+  return {
+    data,
+    pagination: {
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+      NextPage: page < Math.ceil(total / limit),
+      PrevPage: page > 1,
+    },
+  };
 }

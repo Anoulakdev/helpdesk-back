@@ -39,6 +39,7 @@ export async function reportRepair(
       id: true,
       helpdeskStatusId: true,
       helpdeskStatus: true,
+      updatedAt: true,
       assignedTo: {
         select: {
           id: true,
@@ -101,6 +102,7 @@ export async function reportRepair(
 
   const formatted = hdrequests.map((hdrequest) => ({
     ...hdrequest,
+    updatedAt: moment(hdrequest.updatedAt).tz('Asia/Vientiane').format(),
     helpdeskRequest: {
       ...hdrequest.helpdeskRequest,
       createdAt: moment(hdrequest.helpdeskRequest.createdAt)

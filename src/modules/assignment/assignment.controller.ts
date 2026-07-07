@@ -38,8 +38,15 @@ export class AssignmentController {
   findAll(
     @Req() req: UserRequest,
     @Query('helpdeskStatusId') helpdeskStatusId?: number,
+    @Query('page') page?: number,
+    @Query('limit') limit?: number,
   ) {
-    return this.assignmentService.findAll(req.user, helpdeskStatusId);
+    return this.assignmentService.findAll(
+      req.user,
+      helpdeskStatusId,
+      page ? Number(page) : 1,
+      limit ? Number(limit) : 10,
+    );
   }
 
   @Put('accept')

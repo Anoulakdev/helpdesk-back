@@ -29,16 +29,25 @@ export class EliminateService {
     return result;
   }
 
-  findAll(user: AuthUser) {
-    return FindAllEliminate(this.prisma, user);
+  findAll(user: AuthUser, page?: number, limit?: number) {
+    return FindAllEliminate(this.prisma, user, page, limit);
   }
 
   findOne(id: number) {
     return findOneEliminate(this.prisma, id);
   }
 
-  async update(id: number, user: AuthUser, updateEliminateDto: UpdateEliminateDto) {
-    const result = await updateEliminate(this.prisma, id, user, updateEliminateDto);
+  async update(
+    id: number,
+    user: AuthUser,
+    updateEliminateDto: UpdateEliminateDto,
+  ) {
+    const result = await updateEliminate(
+      this.prisma,
+      id,
+      user,
+      updateEliminateDto,
+    );
     notifyHelpdeskUpdate();
     return result;
   }

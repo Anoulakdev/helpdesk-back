@@ -10,6 +10,7 @@ import {
   UseInterceptors,
   UploadedFile,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { EliminateService } from './eliminate.service';
 import { CreateEliminateDto } from './dto/create-eliminate.dto';
@@ -47,8 +48,16 @@ export class EliminateController {
 
   @Get()
   @Roles(2)
-  findAll(@Req() req: UserRequest) {
-    return this.eliminateService.findAll(req.user);
+  findAll(
+    @Req() req: UserRequest,
+    @Query('page') page?: number,
+    @Query('limit') limit?: number,
+  ) {
+    return this.eliminateService.findAll(
+      req.user,
+      page ? Number(page) : 1,
+      limit ? Number(limit) : 10,
+    );
   }
 
   @Get(':id')

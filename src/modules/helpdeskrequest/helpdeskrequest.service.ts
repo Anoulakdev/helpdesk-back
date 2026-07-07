@@ -52,12 +52,23 @@ export class HelpdeskrequestService implements OnModuleDestroy {
     return result;
   }
 
-  async adminFindAll(user: AuthUser, helpdeskStatusId?: number) {
-    const cacheKey = `${user.employee.divisionId}-${helpdeskStatusId ?? 'all'}`;
+  async adminFindAll(
+    user: AuthUser,
+    helpdeskStatusId?: number,
+    page?: number,
+    limit?: number,
+  ) {
+    const cacheKey = `${user.employee.divisionId}-${helpdeskStatusId ?? 'all'}-${page ?? 1}-${limit ?? 10}`;
 
     let queryPromise = this.queryCache.get(cacheKey);
     if (!queryPromise) {
-      queryPromise = adminFindAll(this.prisma, user, helpdeskStatusId);
+      queryPromise = adminFindAll(
+        this.prisma,
+        user,
+        helpdeskStatusId,
+        page,
+        limit,
+      );
       this.queryCache.set(cacheKey, queryPromise);
 
       // ถ้าดึงข้อมูลล้มเหลว ให้ลบตัวที่พังออกจาก Cache เพื่อให้ดึงใหม่ได้ในอนาคต
@@ -69,16 +80,26 @@ export class HelpdeskrequestService implements OnModuleDestroy {
     return queryPromise;
   }
 
-  getAdminStream(user: AuthUser, helpdeskStatusId?: number): Observable<any> {
+  getAdminStream(
+    user: AuthUser,
+    helpdeskStatusId?: number,
+    page?: number,
+    limit?: number,
+  ): Observable<any> {
     return this.change$.pipe(
       debounceTime(100),
       startWith(null), // ส่งข้อมูลรอบแรกทันทีเมื่อเริ่มเชื่อมต่อ
-      switchMap(() => this.adminFindAll(user, helpdeskStatusId)),
+      switchMap(() => this.adminFindAll(user, helpdeskStatusId, page, limit)),
     );
   }
 
-  userFindAll(user: AuthUser, helpdeskStatusId?: number) {
-    return userFindAll(this.prisma, user, helpdeskStatusId);
+  userFindAll(
+    user: AuthUser,
+    helpdeskStatusId?: number,
+    page?: number,
+    limit?: number,
+  ) {
+    return userFindAll(this.prisma, user, helpdeskStatusId, page, limit);
   }
 
   sktHistory(numberSKT: string, createdAt: string) {
@@ -90,7 +111,11 @@ export class HelpdeskrequestService implements OnModuleDestroy {
   }
 
   async update(id: number, updateHelpdeskrequestDto: UpdateHelpdeskrequestDto) {
-    const result = await updateHDRequest(this.prisma, id, updateHelpdeskrequestDto);
+    const result = await updateHDRequest(
+      this.prisma,
+      id,
+      updateHelpdeskrequestDto,
+    );
     notifyHelpdeskUpdate();
     return result;
   }

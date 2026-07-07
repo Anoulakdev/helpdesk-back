@@ -19,8 +19,13 @@ export class AssignmentService {
     return result;
   }
 
-  findAll(user: AuthUser, helpdeskStatusId?: number) {
-    return findAllAssignment(this.prisma, user, helpdeskStatusId);
+  findAll(
+    user: AuthUser,
+    helpdeskStatusId?: number,
+    page?: number,
+    limit?: number,
+  ) {
+    return findAllAssignment(this.prisma, user, helpdeskStatusId, page, limit);
   }
 
   async acceptAssignment(updateAssignmentDto: UpdateAssignmentDto) {
