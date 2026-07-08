@@ -1,6 +1,7 @@
 import { PrismaService } from '../../../prisma/prisma.service';
 import { AuthUser } from '../../../interfaces/auth-user.interface';
 import { CreateChatDto } from '../dto/create-chat.dto';
+import { notifyNotificationUpdate } from '../../../utils/event-bus';
 
 export async function createChat(
   prisma: PrismaService,
@@ -39,13 +40,15 @@ export async function createChat(
     });
 
     if (helpdeskRequest) {
-      const divisionId = helpdeskRequest.ticket.category.headCategory.divisionId;
+      const divisionId =
+        helpdeskRequest.ticket.category.headCategory.divisionId;
       const requestCreatorId = helpdeskRequest.createdById;
       const senderId = user.id;
 
       const isSenderCreator = senderId === requestCreatorId;
       const isSenderStaffOrManagerOfDivision =
-        [2, 3].includes(user.roleId) && user.employee?.divisionId === divisionId;
+        [2, 3].includes(user.roleId) &&
+        user.employee?.divisionId === divisionId;
 
       if (isSenderCreator) {
         const targetUsers = await prisma.user.findMany({
@@ -70,6 +73,7 @@ export async function createChat(
               isRead: false,
             })),
           });
+          notifyNotificationUpdate();
         }
       } else if (isSenderStaffOrManagerOfDivision) {
         if (requestCreatorId !== senderId) {
@@ -81,6 +85,7 @@ export async function createChat(
               isRead: false,
             },
           });
+          notifyNotificationUpdate();
         }
       }
     }

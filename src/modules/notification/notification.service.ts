@@ -1,9 +1,20 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
+import { notificationUpdate$, notifyNotificationUpdate } from '../../utils/event-bus';
+import { Observable } from 'rxjs';
+import { debounceTime, startWith, switchMap } from 'rxjs/operators';
 
 @Injectable()
 export class NotificationService {
   constructor(private readonly prisma: PrismaService) {}
+
+  getNotificationStream(userId: number): Observable<any> {
+    return notificationUpdate$.pipe(
+      debounceTime(100),
+      startWith(null),
+      switchMap(() => this.findAll(userId)),
+    );
+  }
 
   async findAll(userId: number) {
     return this.prisma.notification.findMany({
@@ -44,7 +55,7 @@ export class NotificationService {
   }
 
   async markAsRead(userId: number, id: number) {
-    return this.prisma.notification.updateMany({
+    const result = await this.prisma.notification.updateMany({
       where: {
         id,
         userId,
@@ -53,10 +64,12 @@ export class NotificationService {
         isRead: true,
       },
     });
+    notifyNotificationUpdate();
+    return result;
   }
 
   async markAllAsRead(userId: number) {
-    return this.prisma.notification.updateMany({
+    const result = await this.prisma.notification.updateMany({
       where: {
         userId,
         isRead: false,
@@ -65,5 +78,7 @@ export class NotificationService {
         isRead: true,
       },
     });
+    notifyNotificationUpdate();
+    return result;
   }
 }
