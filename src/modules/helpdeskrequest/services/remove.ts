@@ -48,6 +48,12 @@ export async function removeHDRequest(prisma: PrismaService, id: number) {
 
   // ลบ record ใน database แบบ transaction
   await prisma.$transaction(async (tx) => {
+    // ลบ Notification ที่เกี่ยวข้องกับ helpdeskRequestId นี้
+    await tx.notification.deleteMany({ where: { helpdeskRequestId: id } });
+
+    // ลบ Eliminate
+    await tx.eliminate.deleteMany({ where: { helpdeskRequestId: id } });
+
     // ลบ HelpdeskImg
     await tx.helpdeskImg.deleteMany({ where: { helpdeskRequestId: id } });
 
