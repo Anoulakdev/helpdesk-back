@@ -13,8 +13,8 @@ import { updateHelpdeskStatus } from './services/updateHelpdeskStatus';
 import { updatePriority } from './services/updatePriority';
 import { sktHistory } from './services/history';
 import { helpdeskUpdate$, notifyHelpdeskUpdate } from '../../utils/event-bus';
-import { Observable, Subscription } from 'rxjs';
-import { debounceTime, startWith, switchMap } from 'rxjs/operators';
+import { Observable, Subscription, interval, merge } from 'rxjs';
+import { debounceTime, map, startWith, switchMap } from 'rxjs/operators';
 
 @Injectable()
 export class HelpdeskrequestService implements OnModuleDestroy {
@@ -86,11 +86,15 @@ export class HelpdeskrequestService implements OnModuleDestroy {
     page?: number,
     limit?: number,
   ): Observable<any> {
-    return this.change$.pipe(
+    const data$ = this.change$.pipe(
       debounceTime(100),
       startWith(null), // ส่งข้อมูลรอบแรกทันทีเมื่อเริ่มเชื่อมต่อ
       switchMap(() => this.adminFindAll(user, helpdeskStatusId, page, limit)),
     );
+
+    const ping$ = interval(25000).pipe(map(() => 'heartbeat'));
+
+    return merge(data$, ping$);
   }
 
   userFindAll(
