@@ -7,7 +7,9 @@ export async function adminAssign(prisma: PrismaService, user: AuthUser) {
       employee: {
         divisionId: user.employee.divisionId,
       },
-      roleId: 3,
+      roleId: {
+        in: [2, 3],
+      },
     },
     orderBy: {
       username: 'asc',
