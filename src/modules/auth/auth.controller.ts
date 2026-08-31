@@ -9,8 +9,13 @@ import { UserRequest } from '../../interfaces/user-request.interface';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  // Limit to 5 login attempts per 60 seconds per IP to prevent brute force attacks
-  @Throttle({ default: { limit: 5, ttl: 60000 } })
+  // Throttled per IP + Username (default 30 attempts per 60 seconds per account)
+  @Throttle({
+    default: {
+      limit: Number(process.env.THROTTLE_LOGIN_LIMIT) || 30,
+      ttl: Number(process.env.THROTTLE_LOGIN_TTL) || 60000,
+    },
+  })
   @Post('login')
   async login(@Body() loginDto: LoginDto) {
     return this.authService.login(loginDto);

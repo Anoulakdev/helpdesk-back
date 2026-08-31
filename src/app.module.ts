@@ -1,7 +1,8 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
-import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { ThrottlerModule } from '@nestjs/throttler';
+import { CustomThrottlerGuard } from './common/guards/custom-throttler.guard';
 import { AuthModule } from './modules/auth/auth.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -37,13 +38,17 @@ import { NotificationModule } from './modules/notification/notification.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
-    ThrottlerModule.forRoot([
-      {
-        name: 'default',
-        ttl: 60000, // 60 seconds
-        limit: 100, // 100 requests per minute by default for general endpoints
-      },
-    ]),
+    ThrottlerModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => [
+        {
+          name: 'default',
+          ttl: Number(config.get('THROTTLE_TTL')) || 60000, // 60 seconds
+          limit: Number(config.get('THROTTLE_LIMIT')) || 300, // 300 requests per minute per user/IP
+        },
+      ],
+    }),
     AuthModule,
     DepartmentModule,
     DivisionModule,
@@ -79,7 +84,7 @@ import { NotificationModule } from './modules/notification/notification.module';
     PrismaService,
     {
       provide: APP_GUARD,
-      useClass: ThrottlerGuard,
+      useClass: CustomThrottlerGuard,
     },
   ],
 })
