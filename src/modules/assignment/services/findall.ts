@@ -55,6 +55,27 @@ export async function findAllAssignment(
               },
             },
           },
+          assignments: {
+            include: {
+              helpdeskStatus: true,
+              assignedTo: {
+                select: {
+                  id: true,
+                  employee: {
+                    select: {
+                      id: true,
+                      first_name: true,
+                      last_name: true,
+                      gender: true,
+                      emp_code: true,
+                      empimg: true,
+                      tel: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
         },
       },
     },
