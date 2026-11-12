@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateBuildingDto } from './dto/create-building.dto';
 import { UpdateBuildingDto } from './dto/update-building.dto';
 import { PrismaService } from '../../prisma/prisma.service';
+import { AuthUser } from '../../interfaces/auth-user.interface';
 import { selectBuilding } from './services/selectBuilding';
 import { createBuilding } from './services/create';
 import { findAllBuilding } from './services/findall';
@@ -13,16 +14,16 @@ import { removeBuilding } from './services/remove';
 export class BuildingService {
   constructor(private prisma: PrismaService) {}
 
-  create(createBuildingDto: CreateBuildingDto) {
-    return createBuilding(this.prisma, createBuildingDto);
+  create(user: AuthUser, createBuildingDto: CreateBuildingDto) {
+    return createBuilding(this.prisma, user, createBuildingDto);
   }
 
-  findAll() {
-    return findAllBuilding(this.prisma);
+  findAll(user: AuthUser) {
+    return findAllBuilding(this.prisma, user);
   }
 
-  selectBuilding() {
-    return selectBuilding(this.prisma);
+  selectBuilding(user: AuthUser) {
+    return selectBuilding(this.prisma, user);
   }
 
   findOne(id: number) {

@@ -76,6 +76,7 @@ model Division {
   headCategories  HeadCategory[]
   offices         Office[]
   units           Unit[]
+  buildings       Building[]
 }
 
 model Office {
@@ -217,8 +218,12 @@ model CategoryIcon {
 model Building {
   id               Int               @id @default(autoincrement())
   name             String            @db.VarChar(255)
+  divisionId       Int?
+  division         Division?         @relation(fields: [divisionId], references: [id])
   floors           Floor[]
   helpdeskRequests HelpdeskRequest[]
+
+  @@index([divisionId])
 }
 
 model Floor {
